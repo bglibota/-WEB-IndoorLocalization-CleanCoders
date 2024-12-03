@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { AssetsComponent } from './assets/assets.component';
-import { FacilitiesComponent } from './facilities/facilities.component';
-import { ReportsComponent } from './reports/reports.component';
+import { AssetsComponent } from './Pages/assets/assets.component';
+import { FacilitiesComponent } from './Pages/facilities/facilities.component';
+import { ReportsComponent } from './Pages/reports/reports.component';
 
 export const routes: Routes = [
     {path: 'assets', component: AssetsComponent},
