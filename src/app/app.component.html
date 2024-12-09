@@ -1,4 +1,4 @@
-<nav class="navbar">
+<nav *ngIf="!isLoginPage" class="navbar" >
   <img src="../assets/Sick-Logo.png" alt="logo" class="navbar-logo">
   <a routerLink="/assets">ASSETS</a>
   <a routerLink="/facilities">FACILITIES</a>
