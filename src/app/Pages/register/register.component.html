@@ -1,0 +1,31 @@
+<div class="register-container">
+    <div class="register-form">
+      <img src="assets/Sick-Logo.png" alt="logo" class="login-logo">
+      <h2>Register</h2>
+      <form (ngSubmit)="onRegister()">
+        <div class="input-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" [(ngModel)]="name" required />
+        </div>
+  
+        <div class="input-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" [(ngModel)]="username" required />
+        </div>
+  
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" [(ngModel)]="password" required />
+        </div>
+  
+        <button type="submit">Register</button>
+  
+        <div class="login-link">
+          <p>Already have an account? <a routerLink="/login">Login here</a></p>
+        </div>
+  
+        <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+      </form>
+    </div>
+  </div>
+  
