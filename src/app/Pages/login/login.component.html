@@ -1,28 +1,47 @@
 <div class="login-container">
-    <div class="login-form">
-      <img src="assets/Sick-Logo.png" alt="logo" class="login-logo">
-      <h2>Login</h2>
-      <form (ngSubmit)="onLogin()">
-        <div class="input-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" name="username" [(ngModel)]="username" />
+  <div class="login-form">
+    <img src="assets/Sick-Logo.png" alt="logo" class="login-logo">
+    <h2>Login</h2>
+    <form #loginForm="ngForm" (ngSubmit)="onLogin()">
+      <div class="input-group">
+        <label for="username">Username</label>
+        <input 
+          type="text" 
+          id="username" 
+          name="username" 
+          [(ngModel)]="username" 
+          required
+          #usernameInput="ngModel" />
+        <div *ngIf="usernameInput.invalid && usernameInput.touched" class="error-message">
+          Username is required.
         </div>
-      
-        <div class="input-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" [(ngModel)]="password" />
+      </div>
+    
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password" 
+          [(ngModel)]="password" 
+          required 
+          minlength="6"
+          #passwordInput="ngModel" />
+        <div *ngIf="passwordInput.invalid && passwordInput.touched" class="error-message">
+          <span *ngIf="passwordInput.errors?.['required']">Password is required.</span>
+          <span *ngIf="passwordInput.errors?.['minlength']">Password must be at least 6 characters.</span>
         </div>
+      </div>
+    
+      <button type="submit" [disabled]="loginForm.invalid">Login</button>
+    
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
       
-        <button type="submit">Login</button>
-      
-        <div *ngIf="errorMessage" class="error-message">
-            {{ errorMessage }}
-          </div>
-        
-        <div class="register-link">
-          <p>Don't have an account? <a routerLink="/register">Register here</a></p>
-        </div>
-      </form>
-    </div>
+      <div class="register-link">
+        <p>Don't have an account? <a routerLink="/register">Register here</a></p>
+      </div>
+    </form>
   </div>
-  
+</div>
