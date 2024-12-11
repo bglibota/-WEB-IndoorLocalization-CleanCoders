@@ -51,7 +51,24 @@
         </div>
       </div>
 
-      <button type="submit" [disabled]="registerForm.invalid">Register</button>
+      <div class="input-group">
+        <label for="repeat-password">Repeat Password</label>
+        <input 
+          type="password" 
+          id="repeat-password" 
+          name="repeatPassword" 
+          [(ngModel)]="repeatPassword" 
+          required 
+          #repeatPasswordInput="ngModel" />
+        <div *ngIf="repeatPasswordInput.invalid && repeatPasswordInput.touched" class="error-message">
+          <span *ngIf="repeatPasswordInput.errors?.['required']">Repeat password is required.</span>
+        </div>
+        <div *ngIf="password !== repeatPassword && repeatPasswordInput.touched" class="error-message">
+          Passwords do not match.
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="registerForm.invalid || password !== repeatPassword">Register</button>
 
       <div class="login-link">
         <p>Already have an account? <a routerLink="/login">Login here</a></p>
