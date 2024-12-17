@@ -1,0 +1,60 @@
+.zone-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  label {
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  input {
+    margin-bottom: 16px;
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .points-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); // Dva stupca za raspored točaka
+    gap: 16px;
+
+    .point {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      label {
+        margin-bottom: 4px;
+      }
+
+      input {
+        padding: 4px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      span {
+        padding: 4px 0;
+        font-weight: bold;
+        color: #333;
+      }
+    }
+  }
+
+  button {
+    align-self: center;
+    padding: 8px 16px;
+    font-size: 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #0056b3;
+  }
+}

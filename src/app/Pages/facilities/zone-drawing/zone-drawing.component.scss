@@ -1,0 +1,27 @@
+.zone-drawing-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  
+  .map-container {
+    position: relative;
+  }
+  
+  .warehouse-map {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+  }
+  .zone-drawing-container {
+    position: relative;
+  }
+  
+  canvas {
+    border: 1px solid black;
+    cursor: crosshair;
+  }
+  
+ 
+  

@@ -1,0 +1,11 @@
+<div class="zone-drawing-container">
+  <canvas #canvas (mousedown)="onMouseDown($event)" (mousemove)="onMouseMove($event)" (mouseup)="onMouseUp($event)">
+    Vaš preglednik ne podržava canvas.
+  </canvas>
+
+  <!-- Gumb za omogućavanje crtanja -->
+  <button *ngIf="!drawingEnabled && !hasDrawn" (click)="enableDrawing()">Počni crtanje</button>
+
+  <!-- Gumb za ažuriranje zone nakon crtanja -->
+  <button *ngIf="hasDrawn" (click)="updateZone()">Ažuriraj crtež</button>
+</div>

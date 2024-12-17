@@ -1,0 +1,34 @@
+<form (ngSubmit)="updateZone()" class="zone-form">
+  <label for="zoneName">Naziv Zone:</label>
+  <input type="text" id="zoneName" [(ngModel)]="zone.name" name="zoneName" required />
+
+  <div class="points-grid">
+    <div class="point" *ngFor="let point of zone.points; let i = index">
+      <label for="ordinalNumber{{i}}">Redni broj: {{ point.ordinalNumber }}</label>
+      
+      <label for="x{{i}}">X Koordinata:</label>
+      <input
+        type="number"
+        [(ngModel)]="point.x"
+        name="x{{i}}"
+        [attr.id]="'x' + i"
+        readonly
+        required
+      />
+
+      <label for="y{{i}}">Y Koordinata:</label>
+      <input
+        type="number"
+        [(ngModel)]="point.y"
+        name="y{{i}}"
+        [attr.id]="'y' + i"
+        readonly
+        required
+      />
+
+      
+    </div>
+  </div>
+
+  <button type="submit">Spremi Zonu</button>
+</form>
