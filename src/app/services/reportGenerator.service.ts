@@ -47,5 +47,15 @@ export class ReportGeneratorService {
         }
     }
 
-   
+    async addHeatmapReportData(AssetPositionHistoryPOST: AssetPositionHistoryPOST): Promise<void> {
+        const url = `${this.apiService.getApiURL()}HeatmapReport/AddAssetPositionHistory`;
+    
+        try {
+            const response = await firstValueFrom(this.http.post(url, AssetPositionHistoryPOST));
+            console.log('successfully:', response); 
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    }
 }
