@@ -14,24 +14,28 @@
             <h1>Generate new report</h1>
             <!-- Date selection -->
             <div class="mb-3">
-                <label for="date">Select date:</label>
-                <input class="form-control" type="date" [(ngModel)]="date" id="date" name="date">
+                <label for="date">Select start date:</label>
+                <input class="form-control" type="date" [(ngModel)]="startDate" id="date" name="date">
+            </div>
+            <div class="mb-3">
+                <label for="date">Select end date:</label>
+                <input class="form-control" type="date" [(ngModel)]="endDate" id="date" name="date">
             </div>
             <!--Time range selection-->
             <div class="mb-3">
                 <label for="time">Select time range:</label>
                 <div class="input-group">
-                    <input class="form-control" type="time" [(ngModel)]="timeFrom" name="time">
+                    <input class="form-control" type="time" [(ngModel)]="startTime" name="time">
                     <div class="ms-3 me-3">-</div>
-                    <input class="form-control" type="time" [(ngModel)]="timeUntil" id="timeUntil" name="timeUntil">
+                    <input class="form-control" type="time" [(ngModel)]="endTime" id="timeUntil" name="timeUntil">
                 </div>
             </div>
             <div class="mb-3">
                 <label for="type">Select report type</label>
                 <select class="form-select" [(ngModel)]="reportType" id="type" name="type">
-                    <option value="1">Heatmap report</option>
+                    <option value="heatmap">Heatmap report</option>
                     <option value="2">Zone report</option>
-                  <!--  <option value="3">Optimization report (not available yet)</option>-->
+                   <option value="3" >Optimization report (not available yet)</option>
                 </select>
             </div>
             <div></div>
