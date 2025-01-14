@@ -13,15 +13,18 @@
     </style>
 </head>
 <body>
-    <div>
+    <div class="d-flex justify-content-center ">
+        <div>
         <h1>Heatmap Report</h1>
         <p>Number of tracked objects: <span id="trackedObjectsCount">0</span></p>
         <button id="viewTrackedObjectsButton">View Tracked Objects</button>
-        <canvas id="heatmapCanvas"></canvas>
-    </div>
+        <div class="heatmap-container">
+            <canvas #heatmapCanvas></canvas>
+          </div>
 
-    <script>
-        // JavaScript code to update tracked objects count and draw heatmap can be added here
-    </script>
+    
+    </div>
+    </div>
+  
 </body>
 </html>

@@ -1,0 +1,10 @@
+.heatmap-container {
+    position: relative;
+    width: 500px;
+    height: 500px;
+  }
+  
+  canvas {
+    display: block;
+    border: 1px solid #ccc;
+  }
