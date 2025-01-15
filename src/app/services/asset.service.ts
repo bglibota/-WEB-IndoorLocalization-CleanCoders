@@ -19,8 +19,12 @@ export class AssetService {
     return this.http.get<Asset>(`${this.apiUrl}/GetAsset/${id}`);
   }
 
-  addAsset(asset : Asset) : Observable<Asset>{
-    return this.http.post<Asset>(`${this.apiUrl}/AddAsset`, asset);
+  addAsset(asset: Asset): Observable<Asset> {
+    const assetWithSync = {
+      ...asset,
+      lastSync: asset.lastSync || new Date().toLocaleTimeString('en-GB', { hour12: false })
+    };
+    return this.http.post<Asset>(`${this.apiUrl}/AddAsset`, assetWithSync);
   }
 
   updateAsset(asset: Asset): Observable<Asset> {

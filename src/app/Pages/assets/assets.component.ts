@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Asset } from '../../models/asset.model';
 import { AssetService } from '../../services/asset.service';
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-assets',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './assets.component.html',
   styleUrl: './assets.component.scss'
 })
@@ -13,8 +14,22 @@ import { AssetService } from '../../services/asset.service';
 export class AssetsComponent implements OnInit { 
   dataSource: Asset[] = [];
   showDeleteModal: boolean = false;
+  showAddModal: boolean = false;
   deleteAssetId: number | null = null;
   deleteAssetName: string = '';  
+
+  newAsset: Asset = {
+    id: 0,
+    name: '',
+    x: 0,
+    y: 0,
+    lastSync: '',
+    active: true,
+    floorMapId: 1,
+    assetPositionHistories: [],
+    assetZoneHistories: [],
+    floorMap: null
+  };
 
   constructor(private assetService: AssetService
   ) {}
@@ -36,7 +51,7 @@ export class AssetsComponent implements OnInit {
   }
 
   openDeleteModal(asset: Asset): void {
-    this.deleteAssetId = asset.id;
+    this.deleteAssetId = asset.id ?? null;
     this.deleteAssetName = asset.name;
     this.showDeleteModal = true;
   }
@@ -58,5 +73,45 @@ export class AssetsComponent implements OnInit {
 
   cancelDelete(): void {
     this.showDeleteModal = false; 
+  }
+
+  openAddModal(): void {
+    this.showAddModal = true; 
+  }
+
+  addAsset(): void {
+    this.newAsset.lastSync = this.getCurrentTime();
+
+    const assetToAdd = { ...this.newAsset };
+
+    if (assetToAdd.id !== undefined) {
+      delete assetToAdd.id;
+    }
+  
+    console.log('Adding asset:', assetToAdd);
+  
+    this.assetService.addAsset(assetToAdd).subscribe(
+      (addedAsset) => {
+        this.dataSource.push(addedAsset);
+        this.showAddModal = false;  
+        console.log('Asset added:', addedAsset);
+      },
+      (error) => {
+        console.error('Error adding asset', error);
+      }
+    );
+  }
+  
+
+  cancelAdd(): void {
+    this.showAddModal = false; // Close modal without adding
+  }
+
+  getCurrentTime(): string {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
   }
 }
