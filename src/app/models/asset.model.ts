@@ -1,8 +1,9 @@
 export interface Asset {
     id: number;
-    assetName: string;
-    position: { x: number; y: number };
+    name: string;
+    x : number,
+    y: number,
     floorMap: number;
-    status: boolean;
+    active: boolean;
     lastSync: string;  
   }
