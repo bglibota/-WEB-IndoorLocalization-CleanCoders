@@ -1,9 +1,12 @@
 export interface Asset {
-    id: number;
+    id?: number;
     name: string;
     x : number,
     y: number,
-    floorMap: number;
+    floorMap: number | null;
+    floorMapId: number,
     active: boolean;
-    lastSync: string;  
+    lastSync: string;
+    assetPositionHistories: any[];
+    assetZoneHistories: any[];
   }

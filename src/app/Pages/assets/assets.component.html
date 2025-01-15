@@ -1,4 +1,5 @@
 <div class="asset-table">
+  <button (click)="openAddModal()">Add New Asset</button>
   <table class="table">
     <thead>
       <tr>
@@ -33,5 +34,28 @@
     <h3>Are you sure you want to delete the asset "{{ deleteAssetName }}"?</h3>
     <button (click)="confirmDelete()">Yes, Delete</button>
     <button (click)="cancelDelete()">Cancel</button>
+  </div>
+</div>
+
+<div *ngIf="showAddModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>Add New Asset</h3>
+    <label for="name">Asset Name</label>
+    <input type="text" id="name" [(ngModel)]="newAsset.name" />
+
+    <label for="x">X Position</label>
+    <input type="number" id="x" [(ngModel)]="newAsset.x" />
+
+    <label for="y">Y Position</label>
+    <input type="number" id="y" [(ngModel)]="newAsset.y" />
+
+    <label for="floorMap">Floor Map Id</label>
+    <input type="number" id="floorMap" [(ngModel)]="newAsset.floorMapId" />
+
+    <label for="active">Active</label>
+    <input type="checkbox" id="active" [(ngModel)]="newAsset.active" />
+
+    <button (click)="addAsset()" class="green-button">Add Asset</button>
+    <button (click)="cancelAdd()">Cancel</button>
   </div>
 </div>
