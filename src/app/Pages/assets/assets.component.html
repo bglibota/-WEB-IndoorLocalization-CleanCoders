@@ -1,5 +1,5 @@
 <div class="asset-table">
-  <button (click)="openAddModal()">Add New Asset</button>
+  <button (click)="openModal('add')">Add New Asset</button>
   <table class="table">
     <thead>
       <tr>
@@ -20,8 +20,8 @@
         <td>{{ element?.floorMap }}</td>
         <td>{{ element?.active ? 'Active' : 'Inactive' }}</td>
         <td>
-          <button (click)="editAsset(element)">Edit</button>
-          <button (click)="openDeleteModal(element)">Delete</button>
+          <button (click)="openModal('edit', element)">Edit</button>
+          <button (click)="openModal('delete',element)">Delete</button>
         </td>
         <td>{{ element?.lastSync }}</td>
       </tr>
@@ -32,8 +32,8 @@
 <div *ngIf="showDeleteModal" class="modal-overlay">
   <div class="modal-content">
     <h3>Are you sure you want to delete the asset "{{ deleteAssetName }}"?</h3>
-    <button (click)="confirmDelete()">Yes, Delete</button>
-    <button (click)="cancelDelete()">Cancel</button>
+    <button (click)="handleModalAction('confirm','delete')">Yes, Delete</button>
+    <button (click)="handleModalAction('cancel', 'delete')">Cancel</button>
   </div>
 </div>
 
@@ -55,7 +55,31 @@
     <label for="active">Active</label>
     <input type="checkbox" id="active" [(ngModel)]="newAsset.active" />
 
-    <button (click)="addAsset()" class="green-button">Add Asset</button>
-    <button (click)="cancelAdd()">Cancel</button>
+    <button (click)="handleModalAction('confirm', 'add')" class="green-button">Add Asset</button>
+    <button (click)="handleModalAction('cancel', 'add')">Cancel</button>
   </div>
 </div>
+
+<div *ngIf="showEditModal && editAssetData" class="modal-overlay">
+  <div class="modal-content">
+    <h3>Edit Asset</h3>
+    <label for="editName">Asset Name</label>
+    <input type="text" id="editName" [(ngModel)]="editAssetData.name" />
+
+    <label for="editX">X Position</label>
+    <input type="number" id="editX" [(ngModel)]="editAssetData.x" />
+
+    <label for="editY">Y Position</label>
+    <input type="number" id="editY" [(ngModel)]="editAssetData.y" />
+
+    <label for="editFloorMap">Floor Map Id</label>
+    <input type="number" id="editFloorMap" [(ngModel)]="editAssetData.floorMapId" />
+
+    <label for="editActive">Active</label>
+    <input type="checkbox" id="editActive" [(ngModel)]="editAssetData.active" />
+
+    <button (click)="handleModalAction('confirm', 'edit')" class="green-button">Save Changes</button>
+    <button (click)="handleModalAction('cancel', 'edit')">Cancel</button>
+  </div>
+</div>
+
