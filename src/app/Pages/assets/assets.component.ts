@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-
+import { Component, OnInit } from '@angular/core';
+import { Asset } from '../../models/asset.model';
+import { AssetService } from '../../services/asset.service';
 @Component({
   selector: 'app-assets',
   standalone: true,
@@ -9,19 +10,53 @@ import { Component } from '@angular/core';
   styleUrl: './assets.component.scss'
 })
 
-export class AssetsComponent {
-  displayedColumns: string[] = ['assetName', 'id', 'position', 'floorMap', 'status', 'actions', 'lastSync'];
-  dataSource = [
-    { assetName: 'Forklift', id: '1', position: { x: 10, y: 20 }, floorMap: 'Map1', status: 'Active', lastSync: new Date() },
-    { assetName: 'Pallet', id: '2', position: { x: 30, y: 40 }, floorMap: 'Map2', status: 'Inactive', lastSync: new Date() },
-    { assetName: 'Box', id: '3', position: { x: 50, y: 60 }, floorMap: 'Map3', status: 'Active', lastSync: new Date() },
-  ];
+export class AssetsComponent implements OnInit { 
+  dataSource: Asset[] = [];
+  showDeleteModal: boolean = false;
+  deleteAssetId: number | null = null;
+  deleteAssetName: string = '';  
 
-  editAsset(asset: any): void {
+  constructor(private assetService: AssetService
+  ) {}
+
+  ngOnInit(): void {  
+    this.assetService.getAllAssets().subscribe(
+      (assets) => {
+        console.log('Assets fetched:', assets);  
+        this.dataSource = assets;
+      },
+      (error) => {
+        console.error('Error fetching assets', error);
+      }
+    );
+  }
+
+  editAsset(asset: Asset): void {
     console.log('Edit asset:', asset);
   }
 
-  deleteAsset(asset: any): void {
-    console.log('Delete asset:', asset);
+  openDeleteModal(asset: Asset): void {
+    this.deleteAssetId = asset.id;
+    this.deleteAssetName = asset.name;
+    this.showDeleteModal = true;
+  }
+
+  confirmDelete(): void {
+    if (this.deleteAssetId !== null) {
+      this.assetService.deleteAsset(this.deleteAssetId).subscribe(
+        () => {
+          this.dataSource = this.dataSource.filter(a => a.id !== this.deleteAssetId);
+          console.log('Asset deleted');
+          this.showDeleteModal = false; 
+        },
+        (error) => {
+          console.error('Error deleting asset', error);
+        }
+      );
+    }
+  }
+
+  cancelDelete(): void {
+    this.showDeleteModal = false; 
   }
 }
