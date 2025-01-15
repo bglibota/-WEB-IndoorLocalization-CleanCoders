@@ -77,4 +77,16 @@
   .modal-content button.cancel:hover {
     background-color: #218838;
   }
+
+  .modal-content .green-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  .modal-content .green-button:hover {
+    background-color: #218838;
+  }
   
