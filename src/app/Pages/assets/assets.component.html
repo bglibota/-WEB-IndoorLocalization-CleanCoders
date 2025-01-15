@@ -1,33 +1,37 @@
 <div class="asset-table">
-    <table class="table">
-      <!-- Header Row -->
-      <thead>
-        <tr>
-          <th>Asset Name</th>
-          <th>ID</th>
-          <th>Position (X, Y)</th>
-          <th>FloorMap</th>
-          <th>Status</th>
-          <th>Actions</th>
-          <th>Last Sync</th>
-        </tr>
-      </thead>
-  
-      <!-- Body Rows -->
-      <tbody>
-        <tr *ngFor="let element of dataSource">
-          <td>{{element.assetName}}</td>
-          <td>{{element.id}}</td>
-          <td>{{element.position.x}}, {{element.position.y}}</td>
-          <td>{{element.floorMap}}</td>
-          <td>{{element.status}}</td>
-          <td>
-            <button (click)="editAsset(element)">Edit</button>
-            <button (click)="deleteAsset(element)">Delete</button>
-          </td>
-          <td>{{element.lastSync | date:'short'}}</td>
-        </tr>
-      </tbody>
-    </table>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Asset Name</th>
+        <th>ID</th>
+        <th>Position (X, Y)</th>
+        <th>FloorMap</th>
+        <th>Status</th>
+        <th>Actions</th>
+        <th>Last Sync</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let element of dataSource">
+        <td>{{ element?.name }}</td>
+        <td>{{ element?.id }}</td>
+        <td>{{ element?.x }}, {{ element?.y }}</td>
+        <td>{{ element?.floorMap }}</td>
+        <td>{{ element?.active ? 'Active' : 'Inactive' }}</td>
+        <td>
+          <button (click)="editAsset(element)">Edit</button>
+          <button (click)="openDeleteModal(element)">Delete</button>
+        </td>
+        <td>{{ element?.lastSync }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div *ngIf="showDeleteModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>Are you sure you want to delete the asset "{{ deleteAssetName }}"?</h3>
+    <button (click)="confirmDelete()">Yes, Delete</button>
+    <button (click)="cancelDelete()">Cancel</button>
   </div>
-  
+</div>
