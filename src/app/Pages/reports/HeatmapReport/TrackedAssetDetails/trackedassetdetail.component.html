@@ -16,12 +16,45 @@
     <div>
         <h1>Heatmap Report</h1>
         <p>Number of tracked objects: <span id="trackedObjectsCount">0</span></p>
-        <button id="viewTrackedObjectsButton">View Tracked Objects</button>
-        <canvas id="heatmapCanvas"></canvas>
     </div>
+  
 
-    <script>
-        // JavaScript code to update tracked objects count and draw heatmap can be added here
-    </script>
+    <div class="accordion" id="accordionExample">
+        <div class="accordion-item" *ngFor="let item of assetsListOnly let i = index">
+            <h2 class="accordion-header">
+                <button class="accordion-button" 
+                        type="button" 
+                        data-bs-toggle="collapse" 
+                        [attr.data-bs-target]="'#collapse' + i" 
+                        aria-expanded="false" 
+                        [attr.aria-controls]="'collapse' + i"
+                        (click)="filterData(item)">
+                    Asset: {{ item }} 
+                </button>
+            </h2>
+            <div [id]="'collapse' + i" 
+                 class="accordion-collapse collapse" 
+                 data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <div>
+                        <div style="height: 25vh; overflow-y: scroll;">
+                            <div *ngFor="let item of assetFilteredData">
+                                {{ item.x }} - {{ item.y }}
+                                {{item.dateTime}}
+                            </div>
+                        </div>
+                        <div class="heatmap-container">
+                            <canvas #heatmapCanvas ></canvas>
+                          </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+
+
+
 </body>
 </html>
