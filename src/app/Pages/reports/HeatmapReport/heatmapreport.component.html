@@ -16,10 +16,18 @@
     <div class="d-flex justify-content-center ">
         <div>
         <h1>Heatmap Report</h1>
-        <p>Number of tracked objects: <span id="trackedObjectsCount">0</span></p>
-        <button id="viewTrackedObjectsButton">View Tracked Objects</button>
+        <select class="form-control" [(ngModel)]="selectedFloorMap" (ngModelChange)="onFloorMapChange($event)">
+            <option *ngFor="let floor of getFloorMaps()" [value]="floor">{{ floor }}</option>
+        </select>
+        
+        
+        
+        
+        
+        <p>Number of tracked objects: <span id="trackedObjectsCount" >{{getNumberOfTrackedAssets()}}</span></p>
+        <button id="viewTrackedObjectsButton" (click)="viewAssetDetails()">View Tracked Objects</button>
         <div class="heatmap-container">
-            <canvas #heatmapCanvas></canvas>
+            <canvas #heatmapCanvas ></canvas>
           </div>
 
     
