@@ -10,3 +10,9 @@ export interface Asset {
     assetPositionHistories: any[];
     assetZoneHistories: any[];
   }
+
+  export interface CreateAssetRequest {
+    name: string;
+    floorMapId: number;
+    active: boolean;
+}

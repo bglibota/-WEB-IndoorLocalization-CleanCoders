@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Asset } from '../../models/asset.model';
+import { Asset, CreateAssetRequest } from '../../models/asset.model';
 import { AssetService } from '../../services/asset.service';
 import { FormsModule } from '@angular/forms';
 @Component({
@@ -73,23 +73,22 @@ export class AssetsComponent implements OnInit {
   }
 
   addAsset(): void {
-    this.newAsset.lastSync = this.getCurrentTime();
-    const assetToAdd = { ...this.newAsset };
-    if (assetToAdd.id !== undefined) {
-      delete assetToAdd.id;
-    }
+    const assetToAdd: CreateAssetRequest = {
+        name: this.newAsset.name,
+        floorMapId: this.newAsset.floorMapId,
+        active: this.newAsset.active
+    };
     this.assetService.addAsset(assetToAdd).subscribe({
-      next: (addedAsset) => {
-        this.dataSource.push(addedAsset);
-        this.showAddModal = false;  
-        console.log('Asset added:', addedAsset);
-      },
-      error: (error) => {
-        console.error('Error adding asset', error);
-      }
+        next: (addedAsset) => {
+            this.dataSource.push(addedAsset);
+            this.showAddModal = false;  
+            console.log('Asset added:', addedAsset);
+        },
+        error: (error) => {
+            console.error('Error adding asset', error);
+        }
     });
   }
-
   updateAsset(): void {
     if (this.editAssetData?.id) {
       this.assetService.updateAsset(this.editAssetData).subscribe({

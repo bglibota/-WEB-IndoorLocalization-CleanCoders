@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Asset } from '../models/asset.model';
+import { Asset, CreateAssetRequest } from '../models/asset.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,13 +19,10 @@ export class AssetService {
     return this.http.get<Asset>(`${this.apiUrl}/GetAsset/${id}`);
   }
 
-  addAsset(asset: Asset): Observable<Asset> {
-    const assetWithSync = {
-      ...asset,
-      lastSync: asset.lastSync || new Date().toLocaleTimeString('en-GB', { hour12: false })
-    };
-    return this.http.post<Asset>(`${this.apiUrl}/AddAsset`, assetWithSync);
-  }
+  addAsset(asset: CreateAssetRequest): Observable<Asset> {
+    return this.http.post<Asset>(`${this.apiUrl}/AddAsset`, asset);
+}
+
 
   updateAsset(asset: Asset): Observable<Asset> {
     return this.http.put<Asset>(`${this.apiUrl}/UpdateAsset/${asset.id}`, asset);

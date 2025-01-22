@@ -4,7 +4,6 @@
     <thead>
       <tr>
         <th>Asset Name</th>
-        <th>ID</th>
         <th>Position (X, Y)</th>
         <th>FloorMap</th>
         <th>Status</th>
@@ -15,7 +14,6 @@
     <tbody>
       <tr *ngFor="let element of dataSource">
         <td>{{ element?.name }}</td>
-        <td>{{ element?.id }}</td>
         <td>{{ element?.x }}, {{ element?.y }}</td>
         <td>{{ element?.floorMap }}</td>
         <td>{{ element?.active ? 'Active' : 'Inactive' }}</td>
@@ -39,38 +37,62 @@
 
 <div *ngIf="showAddModal" class="modal-overlay">
   <div class="modal-content">
-    <h3>Add New Asset</h3>
-    <label for="name">Asset Name</label>
-    <input type="text" id="name" [(ngModel)]="newAsset.name" />
+    <h3 class="modal-title">Add New Asset</h3>
 
-    <label for="x">X Position</label>
-    <input type="number" id="x" [(ngModel)]="newAsset.x" />
+    <div class="modal-field">
+      <label for="name">Asset Name</label>
+      <input 
+        type="text" 
+        id="name" 
+        [(ngModel)]="newAsset.name" 
+        placeholder="Enter asset name" 
+        required 
+      />
+    </div>
 
-    <label for="y">Y Position</label>
-    <input type="number" id="y" [(ngModel)]="newAsset.y" />
+    <div class="modal-field">
+      <label for="floorMap">Floor Map ID</label>
+      <input 
+        type="number" 
+        id="floorMap" 
+        [(ngModel)]="newAsset.floorMapId" 
+        placeholder="Enter floor map ID" 
+        required 
+      />
+    </div>
 
-    <label for="floorMap">Floor Map Id</label>
-    <input type="number" id="floorMap" [(ngModel)]="newAsset.floorMapId" />
+    <div class="modal-field">
+      <label for="active">Active</label>
+      <input 
+        type="checkbox" 
+        id="active" 
+        [(ngModel)]="newAsset.active" 
+      />
+    </div>
 
-    <label for="active">Active</label>
-    <input type="checkbox" id="active" [(ngModel)]="newAsset.active" />
-
-    <button (click)="handleModalAction('confirm', 'add')" class="green-button">Add Asset</button>
-    <button (click)="handleModalAction('cancel', 'add')">Cancel</button>
+    <div class="modal-actions">
+      <button 
+        (click)="handleModalAction('confirm', 'add')" 
+        class="green-button"
+      >
+        Add Asset
+      </button>
+      <button 
+        (click)="handleModalAction('cancel', 'add')" 
+        class="cancel-button"
+      >
+        Cancel
+      </button>
+    </div>
   </div>
 </div>
+
 
 <div *ngIf="showEditModal && editAssetData" class="modal-overlay">
   <div class="modal-content">
     <h3>Edit Asset</h3>
     <label for="editName">Asset Name</label>
     <input type="text" id="editName" [(ngModel)]="editAssetData.name" />
-
-    <label for="editX">X Position</label>
-    <input type="number" id="editX" [(ngModel)]="editAssetData.x" />
-
-    <label for="editY">Y Position</label>
-    <input type="number" id="editY" [(ngModel)]="editAssetData.y" />
 
     <label for="editFloorMap">Floor Map Id</label>
     <input type="number" id="editFloorMap" [(ngModel)]="editAssetData.floorMapId" />
