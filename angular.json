@@ -54,7 +54,9 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/mqtt/dist/mqtt.min.js"
+            ],
             "server": "src/main.server.ts",
             "prerender": true,
             "ssr": {
