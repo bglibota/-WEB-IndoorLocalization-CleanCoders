@@ -39,6 +39,8 @@ export class DashboardComponent implements OnInit {
   private initMqtt(): void {
     const brokerUrl = 'ws://localhost:9001'; // Postavi odgovarajući MQTT broker
     this.client = mqtt.connect(brokerUrl);
+    this.client?.publish('floormap/active', 'assets/Tlocrt.png');
+
 
     this.client.on('connect', () => {
       console.log('Connected to MQTT broker.');
@@ -130,4 +132,28 @@ export class DashboardComponent implements OnInit {
   private animateObjects(): void {
     requestAnimationFrame(() => this.drawCanvas());
   }
+
+  private floormapObjects: { [key: string]: string[] } = {
+    'assets/Tlocrt.png': ['obj1', 'obj2', 'obj3'],
+    'assets/Tlocrt2.jpg': ['obj4', 'obj5'],
+    'assets/Tlocrt3.png': ['obj6', 'obj7'],
+  };
+
+  changeFloormap(floormapPath: string): void {
+    this.tlocrtImage.src = floormapPath;
+  
+    // Filtriraj objekte prema trenutnom tlocrtu
+    const allowedObjects = this.floormapObjects[floormapPath] || [];
+    this.objectPositions.forEach((_, id) => {
+      if (!allowedObjects.includes(id)) {
+        this.objectPositions.delete(id);
+      }
+    });
+  
+    // Redraw canvas nakon promjene tlocrta
+    this.drawCanvas();
+    this.client?.publish('floormap/active', floormapPath);
+  }
+  
+  
 }
