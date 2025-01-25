@@ -4,12 +4,16 @@ import mqtt from 'mqtt';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
   @ViewChild('canvas', { static: true }) canvas!: ElementRef<HTMLCanvasElement>;
   private client: mqtt.MqttClient | null = null;
-  private currentPosition: { x: number; y: number } | null = null;
+  private objectPositions: Map<
+    string,
+    { x: number; y: number; previousX?: number; previousY?: number }
+  > = new Map();
+  private tlocrtImage: HTMLImageElement = new Image();
 
   ngOnInit(): void {
     this.setupCanvas();
@@ -24,11 +28,17 @@ export class DashboardComponent implements OnInit {
       canvas.width = parentContainer.clientWidth;
       canvas.height = parentContainer.clientHeight;
     }
+
+    // Postavljanje slike tlocrta kao pozadine
+    this.tlocrtImage.src = 'assets/Tlocrt.png';
+    this.tlocrtImage.onload = () => {
+      this.drawCanvas();
+    };
   }
 
   private initMqtt(): void {
     const brokerUrl = 'ws://localhost:9001'; // Postavi odgovarajući MQTT broker
-    this.client = mqtt.connect(brokerUrl); // Povezivanje s brokerom putem WebSocket-a
+    this.client = mqtt.connect(brokerUrl);
 
     this.client.on('connect', () => {
       console.log('Connected to MQTT broker.');
@@ -44,8 +54,8 @@ export class DashboardComponent implements OnInit {
     this.client.on('message', (topic, message) => {
       if (topic === 'object/position') {
         try {
-          const position = JSON.parse(message.toString());
-          this.updateObjectPosition(position);
+          const { id, x, y } = JSON.parse(message.toString());
+          this.updateObjectPosition(id, { x, y });
         } catch (error) {
           console.error('Failed to parse message:', error);
         }
@@ -57,56 +67,67 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  private updateObjectPosition(position: { x: number; y: number }): void {
+  private updateObjectPosition(
+    id: string,
+    position: { x: number; y: number }
+  ): void {
+    const existing = this.objectPositions.get(id);
+    this.objectPositions.set(id, {
+      ...position,
+      previousX: existing?.previousX ?? position.x,
+      previousY: existing?.previousY ?? position.y,
+    });
+    this.animateObjects();
+  }
+
+  private drawCanvas(): void {
     const canvas = this.canvas.nativeElement;
     const context = canvas.getContext('2d');
-  
+
     if (!context) {
       console.error('Failed to get canvas context.');
       return;
     }
-  
-    // Skaliranje koordinata na temelju veličine kanvasa
-    const scaleX = canvas.width / 100; // Pretpostavljena širina tlocrta je 100
-    const scaleY = canvas.height / 100; // Pretpostavljena visina tlocrta je 100
-  
-    let adjustedX = position.x * scaleX;
-    let adjustedY = position.y * scaleY;
-  
-    // Ograniči kretanje unutar granica kanvasa
-    adjustedX = Math.max(0, Math.min(adjustedX, canvas.width));
-    adjustedY = Math.max(0, Math.min(adjustedY, canvas.height));
-  
-    // Animiraj kretanje objekta
-    const stepSize = 2; // Koliko pomaka u svakoj animaciji
-    const currentPosition = { x: this.currentPosition?.x || adjustedX, y: this.currentPosition?.y || adjustedY };
 
-    const animate = () => {
-      const deltaX = adjustedX - currentPosition.x;
-      const deltaY = adjustedY - currentPosition.y;
+    // Očisti canvas i nacrtaj pozadinu
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(this.tlocrtImage, 0, 0, canvas.width, canvas.height);
 
-      if (Math.abs(deltaX) < stepSize && Math.abs(deltaY) < stepSize) {
-        this.currentPosition = { x: adjustedX, y: adjustedY };
-        return;
-      }
+    // Nacrtaj sve objekte s njihovim pozicijama i oznakama
+    this.objectPositions.forEach((position, id) => {
+      const scaleX = canvas.width / 100; // Pretpostavljena širina tlocrta
+      const scaleY = canvas.height / 100; // Pretpostavljena visina tlocrta
 
-      currentPosition.x += Math.sign(deltaX) * stepSize;
-      currentPosition.y += Math.sign(deltaY) * stepSize;
+      // Izračunaj trenutnu animiranu poziciju pomoću interpolacije (lerp)
+      const adjustedX = this.lerp(position.previousX || position.x, position.x, 0.1) * scaleX;
+      const adjustedY = this.lerp(position.previousY || position.y, position.y, 0.1) * scaleY;
 
-      // Očisti prethodni sadržaj kanvasa
-      context.clearRect(0, 0, canvas.width, canvas.height);
+      // Ažuriraj prethodne pozicije za animaciju
+      position.previousX = adjustedX / scaleX;
+      position.previousY = adjustedY / scaleY;
 
-      // Nacrtaj objekt na novoj poziciji
+      // Nacrtaj objekt (crveni krug)
       context.fillStyle = 'red';
       context.beginPath();
-      context.arc(currentPosition.x, currentPosition.y, 5, 0, 2 * Math.PI);
+      context.arc(adjustedX, adjustedY, 5, 0, 2 * Math.PI);
       context.fill();
 
-      // Pozovi animaciju sljedećeg okvira
-      requestAnimationFrame(animate);
-    };
+      // Dodaj oznaku objekta (npr., "obj1")
+      context.fillStyle = 'black';
+      context.font = '12px Arial';
+      context.textAlign = 'center';
+      context.fillText(id, adjustedX, adjustedY + 15);
+    });
 
-    animate();
-    this.currentPosition = { x: adjustedX, y: adjustedY };
+    // Ponovo pozovi animaciju
+    requestAnimationFrame(() => this.drawCanvas());
+  }
+
+  private lerp(start: number, end: number, t: number): number {
+    return start + (end - start) * t;
+  }
+
+  private animateObjects(): void {
+    requestAnimationFrame(() => this.drawCanvas());
   }
 }
