@@ -56,8 +56,8 @@ export class DashboardComponent implements OnInit {
     this.client.on('message', (topic, message) => {
       if (topic === 'object/position') {
         try {
-          const { id, x, y } = JSON.parse(message.toString());
-          this.updateObjectPosition(id, { x, y });
+          const { AssetId, X, Y } = JSON.parse(message.toString());
+          this.updateObjectPosition(AssetId, { x: X, y: Y });
         } catch (error) {
           console.error('Failed to parse message:', error);
         }
