@@ -3,10 +3,14 @@ import { Component, OnInit } from '@angular/core';
 import { Asset, CreateAssetRequest } from '../../models/asset.model';
 import { AssetService } from '../../services/asset.service';
 import { FormsModule } from '@angular/forms';
+import { forkJoin, map } from 'rxjs';
+import { DatePipe } from '@angular/common';
+
 @Component({
   selector: 'app-assets',
   standalone: true,
   imports: [CommonModule, FormsModule],
+  providers:[DatePipe],
   templateUrl: './assets.component.html',
   styleUrl: './assets.component.scss'
 })
@@ -21,28 +25,50 @@ export class AssetsComponent implements OnInit {
   editAssetData: Asset | null = null;  
   newAsset: Asset = this.getDefaultAsset();
 
-  constructor(private assetService: AssetService) {}
+  constructor(private assetService: AssetService, private datePipe: DatePipe) {}
 
   ngOnInit(): void {
     this.assetService.getAllAssets().subscribe({
       next: (assets) => {
         this.dataSource = assets.sort((a, b) => (a.id ?? 0) - (b.id ?? 0));
   
-        this.dataSource.forEach((asset) => {
-          if (asset.floorMapId) {
-            this.assetService.getFloorMap(asset.floorMapId).subscribe({
-              next: (floorMap) => {
+        const requests = this.dataSource.map(asset => {
+          if (asset.id !== undefined) {
+            const positionHistory$ = this.assetService.getAssetPositionHistory(asset.id).pipe(
+              map((history) => {
+                if (history && history.dateTime) {
+                  asset.lastSync = this.datePipe.transform(history.dateTime, 'yyyy-MM-dd HH:mm:ss') ?? '';
+                }
+                if (history && history.x !== undefined && history.y !== undefined) {
+                  asset.x = parseFloat(history.x.toFixed(2)); 
+                  asset.y = parseFloat(history.y.toFixed(2)); 
+                }
+              })
+            );
+  
+            const floorMap$ = this.assetService.getFloorMap(asset.floorMapId).pipe(
+              map((floorMap) => {
                 asset.floorMap = floorMap;
-              },
-              error: (error) => {
-                console.error('Error fetching floorMap for asset:', asset.id, error);
-              }
-            });
+              })
+            );
+  
+            return forkJoin([positionHistory$, floorMap$]);
+          } else {
+            return forkJoin([]);
+          }
+        });
+  
+        forkJoin(requests).subscribe({
+          next: () => {
+            console.log('Svi podaci su uspješno učitani');
+          },
+          error: (error) => {
+            console.error('Greška prilikom učitavanja podataka:', error);
           }
         });
       },
       error: (error) => {
-        console.error('Error fetching assets', error);
+        console.error('Greška pri dohvacanju assets:', error);
       }
     });
   }

@@ -36,4 +36,8 @@ export class AssetService {
   getFloorMap(id: number): Observable<FloorMap> {
     return this.http.get<FloorMap>(`http://localhost:5039/api/FloorMap/GetFloorMap/${id}`);
   }
+
+  getAssetPositionHistory(id: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${id}/GetPositionHistory`);
+  }
 }
