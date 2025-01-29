@@ -23,16 +23,28 @@ export class AssetsComponent implements OnInit {
 
   constructor(private assetService: AssetService) {}
 
-  ngOnInit(): void {  
-    this.assetService.getAllAssets().subscribe(
-      (assets) => {
-        console.log('Assets fetched:', assets);  
-        this.dataSource = assets.sort((a, b) => (a.id ?? 0) - (b.id ?? 0)); 
+  ngOnInit(): void {
+    this.assetService.getAllAssets().subscribe({
+      next: (assets) => {
+        this.dataSource = assets.sort((a, b) => (a.id ?? 0) - (b.id ?? 0));
+  
+        this.dataSource.forEach((asset) => {
+          if (asset.floorMapId) {
+            this.assetService.getFloorMap(asset.floorMapId).subscribe({
+              next: (floorMap) => {
+                asset.floorMap = floorMap;
+              },
+              error: (error) => {
+                console.error('Error fetching floorMap for asset:', asset.id, error);
+              }
+            });
+          }
+        });
       },
-      (error) => {
+      error: (error) => {
         console.error('Error fetching assets', error);
       }
-    );
+    });
   }
 
   openModal(modalType: 'edit' | 'delete' | 'add', asset?: Asset): void {

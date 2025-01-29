@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Asset, CreateAssetRequest } from '../models/asset.model';
+import { FloorMap } from '../models/floor-map.model';
 
 @Injectable({
   providedIn: 'root'
@@ -30,5 +31,9 @@ export class AssetService {
 
   deleteAsset(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/DeleteAsset/${id}`);
+  }
+
+  getFloorMap(id: number): Observable<FloorMap> {
+    return this.http.get<FloorMap>(`http://localhost:5039/api/FloorMap/GetFloorMap/${id}`);
   }
 }

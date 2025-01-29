@@ -15,7 +15,7 @@
       <tr *ngFor="let element of dataSource">
         <td>{{ element?.name }}</td>
         <td>{{ element?.x }}, {{ element?.y }}</td>
-        <td>{{ element?.floorMap }}</td>
+        <td>{{ element?.floorMap?.name || 'No FloorMap' }}</td>
         <td>{{ element?.active ? 'Active' : 'Inactive' }}</td>
         <td>
           <button (click)="openModal('edit', element)">Edit</button>

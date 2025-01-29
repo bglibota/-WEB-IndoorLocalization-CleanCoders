@@ -1,9 +1,11 @@
+import { FloorMap } from "./floor-map.model";
+
 export interface Asset {
     id?: number;
     name: string;
     x : number,
     y: number,
-    floorMap: number | null;
+    floorMap: FloorMap | null;
     floorMapId: number,
     active: boolean;
     lastSync: string;
