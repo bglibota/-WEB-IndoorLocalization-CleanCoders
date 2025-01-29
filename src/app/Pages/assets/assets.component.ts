@@ -37,7 +37,7 @@ export class AssetsComponent implements OnInit {
             const positionHistory$ = this.assetService.getAssetPositionHistory(asset.id).pipe(
               map((history) => {
                 if (history && history.dateTime) {
-                  asset.lastSync = this.datePipe.transform(history.dateTime, 'yyyy-MM-dd HH:mm:ss') ?? '';
+                  asset.lastSync = this.datePipe.transform(history.dateTime, 'dd-MM-yyyy HH:mm:ss') ?? '';
                 }
                 if (history && history.x !== undefined && history.y !== undefined) {
                   asset.x = parseFloat(history.x.toFixed(2)); 
