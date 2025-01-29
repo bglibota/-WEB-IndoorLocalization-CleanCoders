@@ -6,7 +6,7 @@
   
   <div class="zone-drawing-container">
     <!-- Prosljeđivanje zone i emitiranje ažuriranja -->
-    <app-zone-drawing [zone]="selectedZone" (zoneUpdated)="onZoneUpdated($event)"></app-zone-drawing>
+    <app-zone-drawing [selectedFloorMapId]="selectedFloorMapId" [zone]="selectedZone" (zoneUpdated)="onZoneUpdated($event)"></app-zone-drawing>
   </div>
   
   <div class="zone-list-container">

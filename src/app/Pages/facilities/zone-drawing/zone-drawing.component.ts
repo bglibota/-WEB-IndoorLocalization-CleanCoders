@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
+import { FloorMapService, FloorMap } from '../../../Services/floor-map.service';
 
 interface Point {
   x: number | null;
@@ -19,8 +20,9 @@ interface Zone {
   templateUrl: './zone-drawing.component.html',
   styleUrls: ['./zone-drawing.component.scss']
 })
-export class ZoneDrawingComponent implements AfterViewInit {
+export class ZoneDrawingComponent implements AfterViewInit, OnChanges {
   @Input() zone: Zone = { name: '', points: [] };
+  @Input() selectedFloorMapId: number | null = null;
   @Output() zoneUpdated = new EventEmitter<Zone>();
   @ViewChild('canvas') canvasRef!: ElementRef<HTMLCanvasElement>;
 
@@ -28,27 +30,68 @@ export class ZoneDrawingComponent implements AfterViewInit {
   startPoint: Point | null = null;
   rectangleWidth = 0;
   rectangleHeight = 0;
-  drawingEnabled = false;  
-  hasDrawn = false;        
-  isUpdating = false;     
+  drawingEnabled = false;
+  hasDrawn = false;
+  isUpdating = false;
+  
+  private image = new Image();
+  private savedDrawings: Point[] = []; // Store previous drawings
 
-  private image = new Image(); 
+  constructor(private floorMapService: FloorMapService) {}
 
   ngAfterViewInit(): void {
-    this.image.src = 'assets/dashboard.png'; 
-    this.image.onload = () => {
-      this.drawImage();
-    };
+    if (this.selectedFloorMapId) {
+      this.loadFloorMapImage(this.selectedFloorMapId);
+    }
   }
 
-  private drawImage(): void {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedFloorMapId'] && this.selectedFloorMapId) {
+      this.loadFloorMapImage(this.selectedFloorMapId);
+    }
+  }
+
+  private loadFloorMapImage(floorMapId: number) {
+    this.floorMapService.getFloorMapById(floorMapId).subscribe(
+      (floorMap: FloorMap) => {
+        this.image.src = 'data:image/png;base64,' + floorMap.image;
+        this.image.onload = () => {
+          this.drawCanvas();
+        };
+      },
+      (error) => {
+        console.error('Error loading floor map image', error);
+      }
+    );
+  }
+
+  private drawCanvas(): void {
     const canvas = this.canvasRef.nativeElement;
     const ctx = canvas.getContext('2d');
-    if (ctx) {
+    if (ctx && this.image.complete) {
       canvas.width = this.image.width;
       canvas.height = this.image.height;
-      ctx.drawImage(this.image, 0, 0); 
+      ctx.drawImage(this.image, 0, 0);
+      this.redrawSavedDrawings();
     }
+  }
+
+  private redrawSavedDrawings(): void {
+    const canvas = this.canvasRef.nativeElement;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.strokeStyle = 'blue';
+    ctx.lineWidth = 3;
+
+    this.savedDrawings.forEach((point, index) => {
+      if (index % 2 === 1) { // Ensure we have start and end points
+        const startPoint = this.savedDrawings[index - 1];
+        ctx.strokeRect(startPoint.x!, startPoint.y!, 
+                       point.x! - startPoint.x!, 
+                       point.y! - startPoint.y!);
+      }
+    });
   }
 
   private drawRectangle(): void {
@@ -56,20 +99,14 @@ export class ZoneDrawingComponent implements AfterViewInit {
     const ctx = canvas.getContext('2d');
     if (!ctx || !this.startPoint) return;
 
-   
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    this.drawCanvas(); // Redraw image and saved drawings
 
-   
-    this.drawImage();
-
-   
     ctx.beginPath();
     ctx.rect(this.startPoint.x!, this.startPoint.y!, this.rectangleWidth, this.rectangleHeight);
     ctx.strokeStyle = 'blue';
     ctx.lineWidth = 3;
     ctx.stroke();
   }
-
 
   onMouseDown(event: MouseEvent): void {
     if (!this.drawingEnabled || this.hasDrawn) return;
@@ -79,11 +116,10 @@ export class ZoneDrawingComponent implements AfterViewInit {
     this.startPoint = {
       x: event.clientX - rect.left,
       y: event.clientY - rect.top,
-      ordinalNumber: this.zone.points.length -3,
+      ordinalNumber: this.zone.points.length - 3,
     };
     this.dragging = true;
   }
-
 
   onMouseMove(event: MouseEvent): void {
     if (!this.dragging || !this.startPoint || !this.drawingEnabled) return;
@@ -98,7 +134,6 @@ export class ZoneDrawingComponent implements AfterViewInit {
 
     this.drawRectangle();
   }
-
 
   onMouseUp(event: MouseEvent): void {
     if (!this.dragging || !this.startPoint || !this.drawingEnabled) return;
@@ -124,30 +159,30 @@ export class ZoneDrawingComponent implements AfterViewInit {
       const bottomLeft = {
         x: topLeft.x,
         y: topLeft.y! + this.rectangleHeight,
-        ordinalNumber: this.zone.points.length -1,
+        ordinalNumber: this.zone.points.length - 1,
       };
 
-     
       if (this.isUpdating) {
         this.zone.points = [topLeft, topRight, bottomLeft, bottomRight];
-        this.zoneUpdated.emit(this.zone); 
+        this.zoneUpdated.emit(this.zone);
       }
+
+      // Save the rectangle to the saved drawings array
+      this.savedDrawings.push(topLeft, bottomRight);
     }
 
-    this.hasDrawn = true;  
-    this.drawingEnabled = false; 
+    this.hasDrawn = true;
+    this.drawingEnabled = false;
   }
 
-  // Aktiviranje crtanja
   enableDrawing(): void {
-    this.drawingEnabled = true; 
-    this.isUpdating = true; 
+    this.drawingEnabled = true;
+    this.isUpdating = true;
   }
-
 
   updateZone(): void {
-    this.drawingEnabled = true;  
-    this.hasDrawn = false;       
-    this.isUpdating = true;      
+    this.drawingEnabled = true;
+    this.hasDrawn = false;
+    this.isUpdating = true;
   }
 }
