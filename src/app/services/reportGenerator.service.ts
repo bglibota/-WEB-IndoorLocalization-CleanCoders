@@ -23,7 +23,7 @@ export class ReportGeneratorService {
         if(this.heatmapReportDataList.length>0){
             return this.heatmapReportDataList;
         }
-        const url = `${this.apiService.getApiURL()}HeatmapReport/GetAssetPositionHistoryByDateRangeAndTimeRange/${startDate}/${endDate}/${startTime}/${endTime}`;
+        const url = `${this.apiService.getApiURL()}/HeatmapReport/GetAssetPositionHistoryByDateRangeAndTimeRange/${startDate}/${endDate}/${startTime}/${endTime}`;
 
         try {
             console.log("params:", startDate, endDate, startTime, endTime);
@@ -58,7 +58,7 @@ export class ReportGeneratorService {
 
 
     async addHeatmapReportData(AssetPositionHistoryPOST: AssetPositionHistoryPOST): Promise<void> {
-        const url = `${this.apiService.getApiURL()}HeatmapReport/AddAssetPositionHistory`;
+        const url = `${this.apiService.getApiURL()}/HeatmapReport/AddAssetPositionHistory`;
     
         try {
             const response = await this.http.post(url, AssetPositionHistoryPOST).toPromise();
@@ -68,4 +68,6 @@ export class ReportGeneratorService {
             throw error;
         }
     }
+
+    
 }
