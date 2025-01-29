@@ -1,0 +1,92 @@
+.asset-table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+  }
+  
+  .asset-table th, .asset-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .asset-table th {
+    background-color: #f4f4f4;
+  }
+  
+  button {
+    padding: 8px 12px;
+    margin-right: 8px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+  
+  .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .modal-content h3 {
+    margin-bottom: 20px;
+    font-size: 18px;
+  }
+  
+  .modal-content button {
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 16px;
+    background-color: #ff4d4d;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+  
+    &:hover {
+      background-color: #d43f3f;
+    }
+  }
+  
+  .modal-content button.cancel {
+    background-color: #28a745;
+  }
+  
+  .modal-content button.cancel:hover {
+    background-color: #218838;
+  }
+
+  .modal-content .green-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  .modal-content .green-button:hover {
+    background-color: #218838;
+  }
+  
