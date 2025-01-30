@@ -11,7 +11,7 @@ export class FloormapService {
    constructor(private http: HttpClient, private apiService: ApiService) { }
 
     async getAllFloormap(): Promise<FloorMap[]> {
-      const url = `${this.apiService.getApiURL()}/api/Floormap/GetAllFloormaps`;
+      const url = `${this.apiService.getApiURL()}/api/FloorMap/GetAllFloorMapsWithoutAssetHistories`;
   
       try {
         const response = await fetch(url);
