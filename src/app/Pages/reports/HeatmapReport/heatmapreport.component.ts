@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { Heatmap } from './Components/Heatmap';
 
 import { CommonModule } from '@angular/common';
+import { FloormapService } from '../../../services/floormap.service';
+import { FloorMap } from '../../../models/FloorMap';
 
 
 @Component({
@@ -21,26 +23,35 @@ export class HeatmapReportComponent implements OnInit {
   @ViewChild('heatmapCanvas', { static: true }) canvas!: ElementRef<HTMLCanvasElement>;
 
   reportType: any;
-  startDate: String = '';
-  endDate: String = '';
-  startTime: String = '';
-  endTime: String = '';
+  startDate: Date = new Date();
+  endDate: Date = new Date();
+  startTime: Date = new Date();
+  endTime: Date = new Date();
+  assetsListOnly: string[] = [];
+  assetFilteredData: AssetPositionHistoryGET[] = [];
   AssetPositionHistorylist: AssetPositionHistoryGET[] = [];
   AssetPositionHistorylistOrig: AssetPositionHistoryGET[] = [];
-  selectedFloorMap: any;
+  floorMapList:FloorMap[]=[];
+  selectedFloorMap: FloorMap = { Id: 0, Name: '' , Image: ''};
+  trackedAssetDetail: TrackedAssetDetailComponent;
  
 
-  constructor(private route: ActivatedRoute, private reportGenerator: ReportGeneratorService, private router:Router) { }
+  constructor(private reportGenerator: ReportGeneratorService, private floorMapService: FloormapService) {
+    this.trackedAssetDetail=new TrackedAssetDetailComponent(reportGenerator);
 
-  async ngOnInit(): Promise<void> {
-    this.getURLParams();
-    await this.loadData();
-    this.onFloorMapChange(this.selectedFloorMap);
   }
 
+  async ngOnInit(): Promise<void> {
+    await this.getFloorMaps();
+   
+  }
 
-  private drawHeatmap() {
-    const heatmap = new Heatmap(this.AssetPositionHistorylist, this.canvas);
+  drawHeatmapForAsset(canvasId:string) {
+    const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    console.log("canvas",canvas);
+    const heatmap = new Heatmap(this.assetFilteredData, new ElementRef(canvas));
+    console.log("heatmap",heatmap);
+    
     heatmap.drawHeatmap();
   }
 
@@ -55,60 +66,70 @@ export class HeatmapReportComponent implements OnInit {
     return uniqueAssetNames.size.toString();
   }
 
+  onFloorMapChange(selectedFloor: FloorMap) {
+    console.log(selectedFloor);
+    this.selectedFloorMap = this.floorMapList.find(floorMap => floorMap.Id === selectedFloor.Id)!!;
 
-  private getURLParams() {
-    this.route.params.subscribe(params => {
-      this.startDate = params['startDate'].toString();
-      this.endDate = params['endDate'].toString();
-      this.startTime = params['startTime'].toString();
-      this.endTime = params['endTime'].toString();
-    });
-  }
-
-  onFloorMapChange(selectedFloor: string): void {
-    this.selectedFloorMap = selectedFloor;
-
-    this.FilterAssetsByFloor(selectedFloor);
-    this.drawHeatmap();
-    this.UpdateReportGeneratorService(this.AssetPositionHistorylist);
+    this.FilterAssetsByFloor(this.selectedFloorMap);
+    this.loadAssets();
 }
 
   private async loadData() {
     try {
-      const response = await this.reportGenerator.getHeatmapReportData(this.startDate,this.endDate ,this.startTime ,this.endTime );
+      const response = await this.reportGenerator.getHeatmapReportData(this.startDate.toString(),this.endDate.toString() ,this.startTime.toString(),this.endTime.toString());
       console.log(response);
       if (response != null) {
         this.AssetPositionHistorylistOrig = response;
         this.AssetPositionHistorylist = response;
-        this.UpdateReportGeneratorService(this.AssetPositionHistorylist);
 
-        this.selectedFloorMap = this.getFloorMaps()[0];
+        this.selectedFloorMap = this.floorMapList[0];
       }
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   }
 
-    UpdateReportGeneratorService(list: AssetPositionHistoryGET[]) {
-      this.reportGenerator.heatmapReportDataList = list;
+   
 
-    }
-
-    getFloorMaps() {
-      const floorMaps = new Set(
-          this.AssetPositionHistorylistOrig.map(element => element.floorMapName)
-      );
-      return Array.from(floorMaps);
+    async getFloorMaps() {
+      const floorMaps = await this.floorMapService.getAllFloormap();
+      console.log("floorMaps",Array.from(floorMaps));
+     this.floorMapList= Array.from(floorMaps);
   }
 
-  viewAssetDetails() {
-    this.router.navigate(['/trackedassetdetails/', this.startDate, this.endDate, this.startTime, this.endTime]);
-  }
+ 
 
-  FilterAssetsByFloor(selectedFloor: string) {
-      
-          this.AssetPositionHistorylist = this.AssetPositionHistorylistOrig.filter(
-              element => element.floorMapName === selectedFloor);
-  }
+FilterAssetsByFloor(selectedFloor: FloorMap) {
+    
+        this.AssetPositionHistorylist = this.AssetPositionHistorylistOrig.filter(
+            element => element.floorMapId === selectedFloor.Id!!);
+}
+
+
+filterAccordionAssetData(assetName: string, index: number) {
+  this.assetFilteredData = this.AssetPositionHistorylist.filter(item => item.assetName === assetName);
+  
+}
+
+loadAssets() {
+
+  this.assetsListOnly = Array.from(
+    new Set(this.AssetPositionHistorylist.map(item => item.assetName))
+);
+  console.log("AssetPositionHistorylist",this.assetsListOnly);
+}
+
+
+async generateReport() {
+  await this.loadData();
+  this.onFloorMapChange(this.selectedFloorMap); 
+  this.loadAssets();
+  
+}
+
+
+
+
+
 }
 
