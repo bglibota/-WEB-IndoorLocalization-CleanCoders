@@ -3,7 +3,7 @@ export interface AssetPositionHistoryGET {
     x: number;
     y: number;
     dateTime: Date;
-    floorMapId: Date;
+    floorMapId: number;
     assetId: boolean;
     floorMapName: string;
     assetName: string;
