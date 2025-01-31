@@ -1,33 +1,107 @@
 <div class="asset-table">
-    <table class="table">
-      <!-- Header Row -->
-      <thead>
-        <tr>
-          <th>Asset Name</th>
-          <th>ID</th>
-          <th>Position (X, Y)</th>
-          <th>FloorMap</th>
-          <th>Status</th>
-          <th>Actions</th>
-          <th>Last Sync</th>
-        </tr>
-      </thead>
-  
-      <!-- Body Rows -->
-      <tbody>
-        <tr *ngFor="let element of dataSource">
-          <td>{{element.assetName}}</td>
-          <td>{{element.id}}</td>
-          <td>{{element.position.x}}, {{element.position.y}}</td>
-          <td>{{element.floorMap}}</td>
-          <td>{{element.status}}</td>
-          <td>
-            <button (click)="editAsset(element)">Edit</button>
-            <button (click)="deleteAsset(element)">Delete</button>
-          </td>
-          <td>{{element.lastSync | date:'short'}}</td>
-        </tr>
-      </tbody>
-    </table>
+  <button (click)="openModal('add')">Add New Asset</button>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Asset Name</th>
+        <th>Position (X, Y)</th>
+        <th>FloorMap</th>
+        <th>Status</th>
+        <th>Actions</th>
+        <th>Last Sync</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let element of dataSource">
+        <td>{{ element?.name }}</td>
+        <td>{{ element?.x }}, {{ element?.y }}</td>
+        <td>{{ element?.floorMap?.name || 'No FloorMap' }}</td>
+        <td>{{ element?.active ? 'Active' : 'Inactive' }}</td>
+        <td>
+          <button (click)="openModal('edit', element)">Edit</button>
+          <button (click)="openModal('delete',element)">Delete</button>
+        </td>
+        <td>{{ element?.lastSync }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div *ngIf="showDeleteModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>Are you sure you want to delete the asset "{{ deleteAssetName }}"?</h3>
+    <button (click)="handleModalAction('confirm','delete')">Yes, Delete</button>
+    <button (click)="handleModalAction('cancel', 'delete')">Cancel</button>
   </div>
-  
+</div>
+
+<div *ngIf="showAddModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3 class="modal-title">Add New Asset</h3>
+
+    <div class="modal-field">
+      <label for="name">Asset Name</label>
+      <input 
+        type="text" 
+        id="name" 
+        [(ngModel)]="newAsset.name" 
+        placeholder="Enter asset name" 
+        required 
+      />
+    </div>
+
+    <div class="modal-field">
+      <label for="floorMap">Floor Map ID</label>
+      <input 
+        type="number" 
+        id="floorMap" 
+        [(ngModel)]="newAsset.floorMapId" 
+        placeholder="Enter floor map ID" 
+        required 
+      />
+    </div>
+
+    <div class="modal-field">
+      <label for="active">Active</label>
+      <input 
+        type="checkbox" 
+        id="active" 
+        [(ngModel)]="newAsset.active" 
+      />
+    </div>
+
+    <div class="modal-actions">
+      <button 
+        (click)="handleModalAction('confirm', 'add')" 
+        class="green-button"
+      >
+        Add Asset
+      </button>
+      <button 
+        (click)="handleModalAction('cancel', 'add')" 
+        class="cancel-button"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="showEditModal && editAssetData" class="modal-overlay">
+  <div class="modal-content">
+    <h3>Edit Asset</h3>
+    <label for="editName">Asset Name</label>
+    <input type="text" id="editName" [(ngModel)]="editAssetData.name" />
+
+    <label for="editFloorMap">Floor Map Id</label>
+    <input type="number" id="editFloorMap" [(ngModel)]="editAssetData.floorMapId" />
+
+    <label for="editActive">Active</label>
+    <input type="checkbox" id="editActive" [(ngModel)]="editAssetData.active" />
+
+    <button (click)="handleModalAction('confirm', 'edit')" class="green-button">Save Changes</button>
+    <button (click)="handleModalAction('cancel', 'edit')">Cancel</button>
+  </div>
+</div>
+
