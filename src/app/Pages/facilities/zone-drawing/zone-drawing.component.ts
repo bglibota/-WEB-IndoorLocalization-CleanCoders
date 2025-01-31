@@ -33,9 +33,12 @@ export class ZoneDrawingComponent implements AfterViewInit, OnChanges {
   drawingEnabled = false;
   hasDrawn = false;
   isUpdating = false;
-  
+
   private image = new Image();
   private savedDrawings: Point[] = []; // Store previous drawings
+
+  private canvasWidth: number = 500; // Set canvas size to 500px
+  private canvasHeight: number = 500; // Set canvas size to 500px
 
   constructor(private floorMapService: FloorMapService) {}
 
@@ -52,7 +55,7 @@ export class ZoneDrawingComponent implements AfterViewInit, OnChanges {
   }
 
   private loadFloorMapImage(floorMapId: number) {
-    this.floorMapService.getFloorMapById(floorMapId).subscribe(
+    this.floorMapService.getFloorMap(floorMapId).subscribe(
       (floorMap: FloorMap) => {
         this.image.src = 'data:image/png;base64,' + floorMap.image;
         this.image.onload = () => {
@@ -69,9 +72,27 @@ export class ZoneDrawingComponent implements AfterViewInit, OnChanges {
     const canvas = this.canvasRef.nativeElement;
     const ctx = canvas.getContext('2d');
     if (ctx && this.image.complete) {
-      canvas.width = this.image.width;
-      canvas.height = this.image.height;
-      ctx.drawImage(this.image, 0, 0);
+      // Set canvas dimensions to 500x500 pixels
+      canvas.width = this.canvasWidth;
+      canvas.height = this.canvasHeight;
+
+      // Calculate aspect ratio and scale the image to fit inside the 500x500 canvas
+      const aspectRatio = this.image.width / this.image.height;
+      let newWidth = this.canvasWidth;
+      let newHeight = this.canvasHeight;
+
+      if (this.image.width > this.canvasWidth || this.image.height > this.canvasHeight) {
+        if (aspectRatio > 1) {
+          // Image is wider than it is tall, scale by width
+          newHeight = this.canvasWidth / aspectRatio;
+        } else {
+          // Image is taller than it is wide, scale by height
+          newWidth = this.canvasHeight * aspectRatio;
+        }
+      }
+
+      // Draw the resized image on the canvas
+      ctx.drawImage(this.image, 0, 0, newWidth, newHeight);
       this.redrawSavedDrawings();
     }
   }
@@ -163,12 +184,13 @@ export class ZoneDrawingComponent implements AfterViewInit, OnChanges {
       };
 
       if (this.isUpdating) {
+        // Update the zone with the new points
         this.zone.points = [topLeft, topRight, bottomLeft, bottomRight];
         this.zoneUpdated.emit(this.zone);
       }
 
       // Save the rectangle to the saved drawings array
-      this.savedDrawings.push(topLeft, bottomRight);
+      this.savedDrawings = [topLeft, bottomRight]; // Only store the latest zone
     }
 
     this.hasDrawn = true;
@@ -178,11 +200,18 @@ export class ZoneDrawingComponent implements AfterViewInit, OnChanges {
   enableDrawing(): void {
     this.drawingEnabled = true;
     this.isUpdating = true;
+
+    // Reset saved drawings to ensure only one rectangle can be drawn
+    this.savedDrawings = [];
+    this.zone.points = [];
   }
 
   updateZone(): void {
-    this.drawingEnabled = true;
+    // Clear the current zone and start fresh
+    this.savedDrawings = [];
+    this.zone.points = [];
     this.hasDrawn = false;
+    this.drawingEnabled = true;
     this.isUpdating = true;
   }
 }

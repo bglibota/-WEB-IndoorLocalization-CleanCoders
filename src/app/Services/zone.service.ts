@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 interface Zone {
@@ -15,8 +15,16 @@ export class ZoneService {
 
   constructor(private http: HttpClient) {}
 
-  // Metoda za dohvaćanje svih zona
-  getAllZones(): Observable<Zone[]> {
-    return this.http.get<Zone[]>(this.apiUrl);
+  // Method to fetch all zones or filter by FloormapId
+  getAllZones(floormapId?: number): Observable<Zone[]> {
+    let params = new HttpParams();
+
+    // If a FloormapId is provided, add it to the query params
+    if (floormapId) {
+      params = params.set('floormapId', floormapId.toString());
+    }
+
+    // Make the HTTP request, passing any query parameters
+    return this.http.get<Zone[]>(this.apiUrl, { params });
   }
 }
