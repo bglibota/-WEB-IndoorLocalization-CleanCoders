@@ -38,9 +38,9 @@ export class Heatmap {
     const densityMap = this.calculateDensity();
 
     densityMap.forEach(([x, y, density]) => {
-      console.log(`Gustina na (${x}, ${y}): ${density}`); // Provera gustine
+      console.log(`Gustina na (${x}, ${y}): ${density}`); 
       const color = this.getColorForDensity(density);
-      const radius = 5 + Math.pow(density, 0.7) * 1.5; // Manji bazni radijus za bolju vidljivost
+      const radius = 3 + Math.pow(density, 0.5) ; 
 
       context.beginPath();
       context.arc(x, y, radius, 0, Math.PI * 2);
@@ -54,11 +54,9 @@ export class Heatmap {
     const densityMap: Map<string, { x: number; y: number; count: number }> = new Map();
 
     this.assetPositions.forEach(({ x, y }) => {
-      // Skaliranje pozicija + offseti
       const scaleX = (x / 100) * this.heatmapWidth + this.offsetX;
       const scaleY = (y / 100) * this.heatmapHeight + this.offsetY;
 
-      // Pronalazak bliskih tačaka (domet 6)
       const count = this.assetPositions.filter(
         (p) => Math.abs(p.x - x) <= 6 && Math.abs(p.y - y) <= 6
       ).length;
@@ -74,7 +72,7 @@ export class Heatmap {
     if (density >= 12) return "rgba(255, 0, 0, 0.8)"; // Crvena (najgušće)
     if (density >= 7) return "rgba(255, 165, 0, 0.7)"; // Narandžasta
     if (density >= 3) return "rgba(255, 255, 0, 0.7)"; // Žuta
-    return "rgba(0, 255, 0, 0.7)"; // Zelena (najmanja gustina)
+    return "rgba(0, 255, 0, 0.7)"; 
   }
 
   resizeCanvas(): void {

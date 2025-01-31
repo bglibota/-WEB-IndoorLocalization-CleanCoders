@@ -33,11 +33,9 @@ export class HeatmapReportComponent implements OnInit {
   AssetPositionHistorylistOrig: AssetPositionHistoryGET[] = [];
   floorMapList:FloorMap[]=[];
   selectedFloorMap: FloorMap = { Id: 0, Name: '' , Image: ''};
-  trackedAssetDetail: TrackedAssetDetailComponent;
  
 
   constructor(private reportGenerator: ReportGeneratorService, private floorMapService: FloormapService) {
-    this.trackedAssetDetail=new TrackedAssetDetailComponent(reportGenerator);
 
   }
 
