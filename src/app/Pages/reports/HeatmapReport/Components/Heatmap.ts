@@ -71,17 +71,4 @@ export class Heatmap {
     return "rgba(0, 255, 0, 0.7)"; 
   }
 
-  resizeCanvas(): void {
-    const canvas = this.canvas.nativeElement;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-
-  clearCanvas(): void {
-    const canvas = this.canvas.nativeElement;
-    const context = canvas.getContext("2d");
-    if (context) {
-      context.clearRect(0, 0, canvas.width, canvas.height);
-    }
-  }
 }
