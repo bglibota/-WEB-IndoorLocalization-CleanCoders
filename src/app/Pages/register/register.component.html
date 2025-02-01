@@ -36,6 +36,21 @@
       </div>
 
       <div class="input-group">
+        <label for="email">Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          [(ngModel)]="email" 
+          required 
+          #emailInput="ngModel" />
+        <div *ngIf="emailInput.invalid && emailInput.touched" class="error-message">
+          <span *ngIf="emailInput.errors?.['required']">Email is required.</span>
+          <span *ngIf="emailInput.errors?.['email']">Invalid email format.</span>
+        </div>
+      </div>
+
+      <div class="input-group">
         <label for="password">Password</label>
         <input 
           type="password" 

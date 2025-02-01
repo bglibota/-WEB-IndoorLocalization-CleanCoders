@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Asset, CreateAssetRequest } from '../../models/asset.model';
 import { AssetService } from '../../services/asset.service';
 import { FormsModule } from '@angular/forms';
-import { forkJoin, map } from 'rxjs';
+import { catchError, forkJoin, map, of } from 'rxjs';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -43,12 +43,22 @@ export class AssetsComponent implements OnInit {
                   asset.x = parseFloat(history.x.toFixed(2)); 
                   asset.y = parseFloat(history.y.toFixed(2)); 
                 }
+              }),
+              catchError(() => {
+                asset.lastSync = "null";
+                asset.x = 0;
+                asset.y = 0;
+                return of(null);
               })
             );
   
             const floorMap$ = this.assetService.getFloorMap(asset.floorMapId).pipe(
               map((floorMap) => {
                 asset.floorMap = floorMap;
+              }),
+              catchError(() => {
+                asset.floorMap = null;
+                return of(null);
               })
             );
   
