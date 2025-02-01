@@ -3,14 +3,15 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Asset, CreateAssetRequest } from '../models/asset.model';
 import { FloorMap } from '../models/floor-map.model';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AssetService {
-  private apiUrl = 'http://localhost:5039/api/Assets';
+  private apiUrl = this.apiService.getApiURL()+'/api/Assets';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private apiService:ApiService) { }
 
   getAllAssets() : Observable<Asset[]>{
     return this.http.get<Asset[]>(`${this.apiUrl}/GetAllAssets`);
