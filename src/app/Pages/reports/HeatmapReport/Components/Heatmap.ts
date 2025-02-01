@@ -6,23 +6,20 @@ export class Heatmap {
   private canvas: ElementRef<HTMLCanvasElement>;
   private heatmapWidth: number;
   private heatmapHeight: number;
-  private offsetX: number;
-  private offsetY: number;
+
 
   constructor(
     assetPositions: AssetPositionHistoryGET[],
     canvas: ElementRef<HTMLCanvasElement>,
-    heatmapWidth: number = 450,
-    heatmapHeight: number = 450,
-    offsetX: number = 0,
-    offsetY: number = 0
+    heatmapWidth: number = 350,
+    heatmapHeight: number = 350,
+
   ) {
     this.assetPositions = assetPositions;
     this.canvas = canvas;
     this.heatmapWidth = heatmapWidth;
     this.heatmapHeight = heatmapHeight;
-    this.offsetX = offsetX;
-    this.offsetY = offsetY;
+   
   }
 
   drawHeatmap(): void {
@@ -38,9 +35,8 @@ export class Heatmap {
     const densityMap = this.calculateDensity();
 
     densityMap.forEach(([x, y, density]) => {
-      console.log(`Gustina na (${x}, ${y}): ${density}`); 
       const color = this.getColorForDensity(density);
-      const radius = 3 + Math.pow(density, 0.5) ; 
+      const radius = density-density/2;
 
       context.beginPath();
       context.arc(x, y, radius, 0, Math.PI * 2);
@@ -54,8 +50,8 @@ export class Heatmap {
     const densityMap: Map<string, { x: number; y: number; count: number }> = new Map();
 
     this.assetPositions.forEach(({ x, y }) => {
-      const scaleX = (x / 100) * this.heatmapWidth + this.offsetX;
-      const scaleY = (y / 100) * this.heatmapHeight + this.offsetY;
+      const scaleX = (x / 100) * this.heatmapWidth ;
+      const scaleY = (y / 100) * this.heatmapHeight ;
 
       const count = this.assetPositions.filter(
         (p) => Math.abs(p.x - x) <= 6 && Math.abs(p.y - y) <= 6
@@ -69,9 +65,9 @@ export class Heatmap {
   }
 
   private getColorForDensity(density: number): string {
-    if (density >= 12) return "rgba(255, 0, 0, 0.8)"; // Crvena (najgušće)
-    if (density >= 7) return "rgba(255, 165, 0, 0.7)"; // Narandžasta
-    if (density >= 3) return "rgba(255, 255, 0, 0.7)"; // Žuta
+    if (density >= 15) return "rgba(255, 0, 0, 0.8)"; 
+    if (density >= 10) return "rgba(255, 165, 0, 0.7)"; 
+    if (density >= 5) return "rgba(255, 255, 0, 0.7)"; 
     return "rgba(0, 255, 0, 0.7)"; 
   }
 

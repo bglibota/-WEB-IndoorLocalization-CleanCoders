@@ -26,7 +26,7 @@ export class ReportGeneratorService {
         const url = `${this.apiService.getApiURL()}/HeatmapReport/GetAssetPositionHistoryByDateRangeAndTimeRange/${startDate}/${endDate}/${startTime}/${endTime}`;
 
         try {
-            console.log("params:", startDate, endDate, startTime, endTime);
+         
             const response = await fetch(url);
 
  
