@@ -23,9 +23,13 @@ interface Zone {
 export class ZoneFormComponent {
   @Input() zone: Zone = { name: '', points: [] };  
   @Output() zoneUpdated = new EventEmitter<Zone>();  
-
+  @Input() cancelUpdate = false; // EventEmitter for cancel action
  
   updateZone() {
     this.zoneUpdated.emit(this.zone);
+  }
+  cancelZoneUpdate() {
+    
+    
   }
 }

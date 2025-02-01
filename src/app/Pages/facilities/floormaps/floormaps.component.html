@@ -1,11 +1,17 @@
 <div *ngIf="floorMaps.length > 0" class="floor-maps-container">
-  <div 
-    *ngFor="let floorMap of floorMaps" 
-    class="floor-map-card" 
-    (click)="selectFloorMap(floorMap.id)"
-  >
-    <img [src]="'data:image/png;base64,' + floorMap.image" alt="Floor Map" class="floor-map-icon" />
-    <p class="floor-map-name">{{ floorMap.name }}</p>
+  <div class="scrollable-wrapper">
+    <div
+      *ngFor="let floorMap of floorMaps"
+      class="floor-map-card"
+      (click)="selectFloorMap(floorMap.id)"
+    >
+      <img
+        [src]="'data:image/png;base64,' + floorMap.image"
+        alt="Floor Map"
+        class="floor-map-icon"
+      />
+      <p class="floor-map-name">{{ floorMap.name }}</p>
+    </div>
   </div>
 </div>
 

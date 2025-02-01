@@ -13,7 +13,7 @@ export interface FloorMap {
   providedIn: 'root',
 })
 export class FloorMapService {
-  private apiUrlGetAllFloorMaps = 'https://localhost:7197/api/FloorMap/GetAllFloorMaps'; // Replace with your backend API URL
+  private apiUrlGetAllFloorMaps = 'https://localhost:7197/api/FloorMap/GetAllFloorMapsWithoutAssetHistories'; // Replace with your backend API URL
 
   constructor(private http: HttpClient) {}
 

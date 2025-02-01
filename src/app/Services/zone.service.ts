@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 interface Zone {
+  id: number;
   name: string;
   points: { x: number; y: number; ordinalNumber: number }[];
 }
@@ -11,7 +12,7 @@ interface Zone {
   providedIn: 'root'
 })
 export class ZoneService {
-  private apiUrl = 'https://localhost:7197/Zone/GetAllZones'; // API endpoint za zone
+  private apiUrl = 'https://localhost:7197/Zone'; // Base API endpoint for zones
 
   constructor(private http: HttpClient) {}
 
@@ -19,12 +20,25 @@ export class ZoneService {
   getAllZones(floormapId?: number): Observable<Zone[]> {
     let params = new HttpParams();
 
-    // If a FloormapId is provided, add it to the query params
     if (floormapId) {
       params = params.set('floormapId', floormapId.toString());
     }
 
-    // Make the HTTP request, passing any query parameters
-    return this.http.get<Zone[]>(this.apiUrl, { params });
+    return this.http.get<Zone[]>(`${this.apiUrl}/GetAllZones`, { params });
+  }
+
+  // Method to update a zone
+  updateZone(zone: Zone): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/UpdateZone/${zone.id}`, zone);
+  }
+
+  // Method to delete a zone
+  deleteZone(zoneId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/DeleteZone/${zoneId}`);
+  }
+
+  // Method to save a new zone
+  saveZone(zone: Zone): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/CreateZone`, zone);
   }
 }

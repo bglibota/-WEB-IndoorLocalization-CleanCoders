@@ -9,6 +9,7 @@ interface Point {
 }
 
 interface Zone {
+  id: number;
   name: string;
   points: Point[];
 }
@@ -25,7 +26,6 @@ export class ZoneListComponent implements OnInit, OnChanges {
   @Output() zoneUpdated = new EventEmitter<Zone>();
   @Input() selectedFloorMapId: number | null = null;
 
-  // Add loading state for user feedback
   isLoading: boolean = false;
 
   constructor(private zoneService: ZoneService) {}
@@ -34,40 +34,34 @@ export class ZoneListComponent implements OnInit, OnChanges {
     this.fetchZones();
   }
 
-  // Listen for changes in selectedFloorMapId
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedFloorMapId']) {
-      // If selectedFloorMapId has changed, refetch zones
       this.fetchZones();
     }
   }
 
   fetchZones(): void {
     if (this.selectedFloorMapId === null) {
-      this.zones = [];  // Clear zones if no floor map ID is provided
+      this.zones = [];
       return;
     }
 
-    this.isLoading = true;  // Set loading state to true while fetching
+    this.isLoading = true;
 
-    // Fetch zones for the selected floor map ID
     this.zoneService.getAllZones(this.selectedFloorMapId).subscribe({
       next: (data) => {
-        // Parse the points if they are stored as a string
         data.forEach(zone => {
           if (typeof zone.points === 'string') {
             zone.points = JSON.parse(zone.points);
           }
         });
 
-        // Update zones array with fetched data
         this.zones = data;
       },
       error: (err) => {
         console.error('Error fetching zones:', err);
       },
       complete: () => {
-        // Set loading state to false once the request is complete
         this.isLoading = false;
       },
     });
@@ -75,5 +69,17 @@ export class ZoneListComponent implements OnInit, OnChanges {
 
   selectZone(zone: Zone): void {
     this.zoneUpdated.emit(zone);
+  }
+
+  updateZone(zone: Zone): void {
+    this.zoneUpdated.emit(zone);
+  }
+
+  deleteZone(zoneId: number): void {
+    this.zoneService.deleteZone(zoneId).subscribe(() => {
+      this.fetchZones();
+    }, error => {
+      console.error('Error deleting zone:', error);
+    });
   }
 }

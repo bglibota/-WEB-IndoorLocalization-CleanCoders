@@ -1,29 +1,31 @@
-<div *ngIf="zones.length > 0">
-    <table>
-      <thead>
+<div *ngIf="zones.length > 0" class="zones-container">
+  <table class="zones-table">
+    <thead>
+      <tr>
+        <th>Zone Name</th>
+        <th>Coordinates</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let zone of zones">
         <tr>
-          <th>Zone Name</th>
-          <th>Koordinate</th>
+          <td>{{ zone.name }}</td>
+          <td>
+            <ng-container *ngFor="let point of zone.points; let i = index">
+              {{ i + 1 }}. x: {{ point.x }}; y: {{ point.y }}<span *ngIf="i < zone.points.length - 1">, </span>
+            </ng-container>
+          </td>
+          <td>
+            <button class="btn-update" (click)="updateZone(zone)">Update</button>
+            <button class="btn-delete" (click)="deleteZone(zone.id)">Delete</button>
+          </td>
         </tr>
-      </thead>
-      <tbody>
-        <ng-container *ngFor="let zone of zones">
-          <tr (click)="selectZone(zone)">
-           
-            <td>{{ zone.name }}</td>
-          
-            <td>
-              <ng-container *ngFor="let point of zone.points; let i = index">
-                {{ i + 1 }}. x: {{ point.x }}; y: {{ point.y }}<span *ngIf="i < zone.points.length - 1">, </span>
-              </ng-container>
-            </td>
-          </tr>
-        </ng-container>
-      </tbody>
-    </table>
-  </div>
-  
-  <div *ngIf="zones.length === 0">
-    <p>No zones available</p>
-  </div>
-  
+      </ng-container>
+    </tbody>
+  </table>
+</div>
+
+<div *ngIf="zones.length === 0" class="no-zones-message">
+  <p>No zones available</p>
+</div>

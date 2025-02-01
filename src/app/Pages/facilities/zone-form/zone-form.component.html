@@ -1,34 +1,45 @@
 <form (ngSubmit)="updateZone()" class="zone-form">
-  <label for="zoneName">Naziv Zone:</label>
-  <input type="text" id="zoneName" [(ngModel)]="zone.name" name="zoneName" required />
+  <h2>Zone Form</h2>
+  
+  <div class="form-group">
+    <label for="zoneName">Naziv Zone:</label>
+    <input type="text" id="zoneName" [(ngModel)]="zone.name" name="zoneName" required />
+  </div>
 
   <div class="points-grid">
     <div class="point" *ngFor="let point of zone.points; let i = index">
-      <label for="ordinalNumber{{i}}">Redni broj: {{ point.ordinalNumber }}</label>
+      <div class="point-header">
+        <label for="ordinalNumber{{ i }}">Redni broj: {{ point.ordinalNumber }}</label>
+      </div>
       
-      <label for="x{{i}}">X Koordinata:</label>
-      <input
-        type="number"
-        [(ngModel)]="point.x"
-        name="x{{i}}"
-        [attr.id]="'x' + i"
-        readonly
-        required
-      />
-
-      <label for="y{{i}}">Y Koordinata:</label>
-      <input
-        type="number"
-        [(ngModel)]="point.y"
-        name="y{{i}}"
-        [attr.id]="'y' + i"
-        readonly
-        required
-      />
-
-      
+      <div class="point-coordinates">
+        <div class="coordinate-group">
+          <label for="x{{ i }}">X Koordinata:</label>
+          <input
+            type="number"
+            [(ngModel)]="point.x"
+            name="x{{ i }}"
+            [attr.id]="'x' + i"
+            readonly
+            required
+          />
+        </div>
+        
+        <div class="coordinate-group">
+          <label for="y{{ i }}">Y Koordinata:</label>
+          <input
+            type="number"
+            [(ngModel)]="point.y"
+            name="y{{ i }}"
+            [attr.id]="'y' + i"
+            readonly
+            required
+          />
+        </div>
+      </div>
     </div>
   </div>
 
-  <button type="submit">Spremi Zonu</button>
+  <button type="submit" class="submit-button">Spremi Zonu</button>
+  <button type="button" class="cancel-button" (click)="cancelZoneUpdate()">Cancel</button>
 </form>

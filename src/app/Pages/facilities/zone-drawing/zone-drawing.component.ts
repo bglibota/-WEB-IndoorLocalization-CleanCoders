@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, OnChanges, SimpleChanges, input } from '@angular/core';
 import { FloorMapService, FloorMap } from '../../../Services/floor-map.service';
 
 interface Point {
@@ -35,10 +35,10 @@ export class ZoneDrawingComponent implements AfterViewInit, OnChanges {
   isUpdating = false;
 
   private image = new Image();
-  private savedDrawings: Point[] = []; // Store previous drawings
+  private savedDrawings: Point[] = [];
 
-  private canvasWidth: number = 500; // Set canvas size to 500px
-  private canvasHeight: number = 500; // Set canvas size to 500px
+  private canvasWidth: number = 500;
+  private canvasHeight: number = 500;
 
   constructor(private floorMapService: FloorMapService) {}
 
@@ -50,8 +50,82 @@ export class ZoneDrawingComponent implements AfterViewInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedFloorMapId'] && this.selectedFloorMapId) {
+      this.clearCanvas();
+      this.resetDrawingState();
+      
       this.loadFloorMapImage(this.selectedFloorMapId);
     }
+  
+    if (changes['zone'] && this.zone.points.length === 4) {
+      this.clearCanvas();
+      this.drawZoneRectangle();
+    }
+    
+   
+  }
+ 
+  private clearCanvas(): void {
+    const canvas = this.canvasRef?.nativeElement;
+    if (!canvas) return; // Exit early if the canvas is not available
+  
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      // Save the current image state
+      const image = this.image;
+  
+      // Clear the canvas, including previous drawings
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+      // Redraw the background image to keep it intact
+      if (image.complete) {
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+      }
+    }
+  
+    // Optionally, reset drawing state
+    this.savedDrawings = [];
+    this.hasDrawn = false;
+    this.drawingEnabled = false;
+  }
+  
+  
+  
+  private resetDrawingState(): void {
+    this.savedDrawings = [];
+    this.zone.points = [];
+    this.hasDrawn = false;
+    this.drawingEnabled = false;
+    this.isUpdating = false;
+  }
+  
+  private drawZoneRectangle(): void {
+    const canvas = this.canvasRef.nativeElement;
+    const ctx = canvas.getContext('2d');
+    if (!ctx || !this.zone.points || this.zone.points.length !== 4) return;
+  
+    // Ensure the canvas is redrawn with the background image
+    this.drawCanvas();
+  
+    const [topLeft, topRight, bottomRight, bottomLeft] = this.zone.points;
+  
+    const scaledTopLeft = this.scalePointFrom100x100(topLeft);
+    const scaledBottomRight = this.scalePointFrom100x100(bottomRight);
+  
+    const width = scaledBottomRight.x! - scaledTopLeft.x!;
+    const height = scaledBottomRight.y! - scaledTopLeft.y!;
+  
+    ctx.beginPath();
+    ctx.rect(scaledTopLeft.x!, scaledTopLeft.y!, width, height);
+    ctx.strokeStyle = 'blue';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+  }
+  private scalePointFrom100x100(point: Point): Point {
+    return {
+      x: (point.x! / 100) * this.canvasWidth,
+      y: (point.y! / 100) * this.canvasHeight,
+      ordinalNumber: point.ordinalNumber,
+    };
   }
 
   private loadFloorMapImage(floorMapId: number) {
@@ -59,6 +133,8 @@ export class ZoneDrawingComponent implements AfterViewInit, OnChanges {
       (floorMap: FloorMap) => {
         this.image.src = 'data:image/png;base64,' + floorMap.image;
         this.image.onload = () => {
+          this.canvasWidth = this.image.width;
+          this.canvasHeight = this.image.height;
           this.drawCanvas();
         };
       },
@@ -72,29 +148,19 @@ export class ZoneDrawingComponent implements AfterViewInit, OnChanges {
     const canvas = this.canvasRef.nativeElement;
     const ctx = canvas.getContext('2d');
     if (ctx && this.image.complete) {
-      // Set canvas dimensions to 500x500 pixels
       canvas.width = this.canvasWidth;
       canvas.height = this.canvasHeight;
-
-      // Calculate aspect ratio and scale the image to fit inside the 500x500 canvas
-      const aspectRatio = this.image.width / this.image.height;
-      let newWidth = this.canvasWidth;
-      let newHeight = this.canvasHeight;
-
-      if (this.image.width > this.canvasWidth || this.image.height > this.canvasHeight) {
-        if (aspectRatio > 1) {
-          // Image is wider than it is tall, scale by width
-          newHeight = this.canvasWidth / aspectRatio;
-        } else {
-          // Image is taller than it is wide, scale by height
-          newWidth = this.canvasHeight * aspectRatio;
-        }
-      }
-
-      // Draw the resized image on the canvas
-      ctx.drawImage(this.image, 0, 0, newWidth, newHeight);
+      ctx.drawImage(this.image, 0, 0, this.canvasWidth, this.canvasHeight);
       this.redrawSavedDrawings();
     }
+  }
+
+  private scalePointTo100x100(point: Point): Point {
+    return {
+      x: (point.x! / this.canvasWidth) * 100,
+      y: (point.y! / this.canvasHeight) * 100,
+      ordinalNumber: point.ordinalNumber
+    };
   }
 
   private redrawSavedDrawings(): void {
@@ -106,7 +172,7 @@ export class ZoneDrawingComponent implements AfterViewInit, OnChanges {
     ctx.lineWidth = 3;
 
     this.savedDrawings.forEach((point, index) => {
-      if (index % 2 === 1) { // Ensure we have start and end points
+      if (index % 2 === 1) {
         const startPoint = this.savedDrawings[index - 1];
         ctx.strokeRect(startPoint.x!, startPoint.y!, 
                        point.x! - startPoint.x!, 
@@ -114,7 +180,6 @@ export class ZoneDrawingComponent implements AfterViewInit, OnChanges {
       }
     });
   }
-
   private drawRectangle(): void {
     const canvas = this.canvasRef.nativeElement;
     const ctx = canvas.getContext('2d');
@@ -128,7 +193,6 @@ export class ZoneDrawingComponent implements AfterViewInit, OnChanges {
     ctx.lineWidth = 3;
     ctx.stroke();
   }
-
   onMouseDown(event: MouseEvent): void {
     if (!this.drawingEnabled || this.hasDrawn) return;
 
@@ -137,7 +201,7 @@ export class ZoneDrawingComponent implements AfterViewInit, OnChanges {
     this.startPoint = {
       x: event.clientX - rect.left,
       y: event.clientY - rect.top,
-      ordinalNumber: this.zone.points.length - 3,
+      ordinalNumber: 1,
     };
     this.dragging = true;
   }
@@ -163,55 +227,44 @@ export class ZoneDrawingComponent implements AfterViewInit, OnChanges {
 
     const canvas = this.canvasRef.nativeElement;
     const rect = canvas.getBoundingClientRect();
-    const endPoint = {
+    const endPoint: Point = {
       x: event.clientX - rect.left,
       y: event.clientY - rect.top,
-      ordinalNumber: this.zone.points.length,
+      ordinalNumber: 4,
     };
 
-    if (this.startPoint) {
-      const topLeft = this.startPoint;
-      const bottomRight = endPoint;
-      const topRight = {
-        x: topLeft.x! + this.rectangleWidth,
-        y: topLeft.y,
-        ordinalNumber: this.zone.points.length - 2,
-      };
-      const bottomLeft = {
-        x: topLeft.x,
-        y: topLeft.y! + this.rectangleHeight,
-        ordinalNumber: this.zone.points.length - 1,
-      };
-
-      if (this.isUpdating) {
-        // Update the zone with the new points
-        this.zone.points = [topLeft, topRight, bottomLeft, bottomRight];
-        this.zoneUpdated.emit(this.zone);
-      }
-
-      // Save the rectangle to the saved drawings array
-      this.savedDrawings = [topLeft, bottomRight]; // Only store the latest zone
+    const topLeft = this.scalePointTo100x100(this.startPoint);
+    const bottomRight = this.scalePointTo100x100(endPoint);
+    const topRight: Point = { x: bottomRight.x, y: topLeft.y, ordinalNumber: 2 };
+    const bottomLeft: Point = { x: topLeft.x, y: bottomRight.y, ordinalNumber: 3 };
+    if (this.isUpdating) {
+      this.zone.points = [topLeft, topRight, bottomRight, bottomLeft];
+      this.zoneUpdated.emit(this.zone);
     }
 
+    this.savedDrawings = [topLeft, bottomRight];
     this.hasDrawn = true;
     this.drawingEnabled = false;
   }
-
-  enableDrawing(): void {
-    this.drawingEnabled = true;
-    this.isUpdating = true;
-
-    // Reset saved drawings to ensure only one rectangle can be drawn
-    this.savedDrawings = [];
-    this.zone.points = [];
-  }
-
   updateZone(): void {
     // Clear the current zone and start fresh
+    this.clearCanvas();
     this.savedDrawings = [];
     this.zone.points = [];
     this.hasDrawn = false;
     this.drawingEnabled = true;
     this.isUpdating = true;
   }
-}
+  enableDrawing(): void {
+    this.clearCanvas();
+    this.drawingEnabled = true;
+    this.isUpdating = true;
+
+    // Reset saved drawings to ensure only one rectangle can be drawn
+    this.savedDrawings = [];
+    this.zone.points = [];
+    
+  }
+  
+  
+} 

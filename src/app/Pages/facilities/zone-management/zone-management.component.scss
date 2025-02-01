@@ -1,58 +1,44 @@
 .zone-management-container {
-    display: grid;
-    grid-template-columns: 1fr 2fr;  // 2 stupca: prvi za formu, drugi za crtanje
-    grid-template-rows: auto 1fr;    // Prvi red za formu i crtež, drugi za listu zona
-    grid-template-areas: 
-      "zoneForm zoneDrawing"  // Prvi red: forma lijevo, crtanje desno
-      "zoneList zoneList";     // Drugi red: lista zona ispod
-    height: 100vh;
-    gap: 10px;
-    padding: 10px;
-  }
-  
-  .zone-form-container {
-    grid-area: zoneForm;
-    display: flex;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.zone-management-container > div {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  flex: 1 1 calc(33.333% - 40px); /* Three columns, adjust as needed */
+  min-width: 300px;
+}
+
+.zone-management-container h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: #333333;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 5px;
+}
+
+.zone-management-container app-zone-form,
+.zone-management-container app-zone-drawing,
+.zone-management-container app-zone-list {
+  display: block;
+  margin-top: 10px;
+}
+
+@media screen and (max-width: 768px) {
+  .zone-management-container {
     flex-direction: column;
-    padding: 10px;
+    gap: 10px;
   }
-  
-  .zone-form-left {
-    padding: 10px;
-    max-width: 300px;  // Zadržava formu kompaktnijom
+
+  .zone-management-container > div {
+    flex: 1 1 100%;
   }
-  
-  .zone-drawing-right {
-    grid-area: zoneDrawing;
-    padding: 10px;
-    background-color: #f5f5f5;
-    border: 1px solid #ddd;
-    min-height: 300px;
-  }
-  
-  .zone-list-container {
-    grid-area: zoneList;
-    padding: 10px;
-    margin-top: 10px;
-    overflow-y: auto;
-    background-color: #eaeaea;
-  }
-  
-  .zone-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .zone-list-item {
-    padding: 10px;
-    margin: 5px 0;
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    cursor: pointer;
-  }
-  
-  .zone-list-item:hover {
-    background-color: #f0f0f0;
-  }
-  
+}
