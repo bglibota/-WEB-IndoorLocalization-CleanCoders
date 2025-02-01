@@ -1,1 +1,6 @@
-/* You can add global styles to this file, and also import other style files */
+@import "primeng/resources/themes/md-light-indigo/theme.css";
+@import "primeng/resources/primeng.css";
+body{padding-inline: 5vh;}
+.p-calendar{
+    height: 0;
+}

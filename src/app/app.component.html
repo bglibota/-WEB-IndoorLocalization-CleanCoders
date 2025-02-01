@@ -1,9 +1,18 @@
-<nav *ngIf="!isLoginPage" class="navbar" >
+<nav *ngIf="!isLoginPage" class="navbar">
   <img src="../assets/Sick-Logo.png" alt="logo" class="navbar-logo">
-  <a routerLink="/assets">ASSETS</a>
-  <a routerLink="/facilities">FACILITIES</a>
-  <a routerLink="/reports">REPORTS</a>
+  <a routerLink="/assets" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">ASSETS</a>
+  <a routerLink="/facilities" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">FACILITIES</a>
+  <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">DASHBOARD</a>
+  <div class="dropdown">
+    <a class="dropdown-toggle" href="#" role="button" id="reportsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+      REPORTS
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
+      <li><a class="dropdown-item" routerLink="/heatmapreport" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Heatmap Report</a></li>
+      <li><a class="dropdown-item" routerLink="/reports/zone" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Zone Report</a></li>
+    </ul>
+  </div>
+  <button (click)="onLogout()" class="logout-button">Logout</button>
 </nav>
-
 
 <router-outlet></router-outlet>
