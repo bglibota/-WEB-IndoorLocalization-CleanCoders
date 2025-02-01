@@ -12,7 +12,7 @@
 
     <div class="d-flex justify-content-center ">
         <div>
-            <h1>Heatmap Report</h1>
+            <h1 class="mb-5">Heatmap Report</h1>
             <div class="d-flex flex-row">
 
                 <div class=" me-4 mb-3">
@@ -48,27 +48,40 @@
                     <button class="btn btn-primary" (click)="generateReport()">Generate report</button>
                 </div>
             </div>
-            <select class="form-control" [(ngModel)]="selectedFloorMap" (ngModelChange)="onFloorMapChange($event)">
-                <option *ngFor="let floor of floorMapList" [ngValue]="floor">{{ floor.Name }}</option>
-            </select>
+            <div class="d-flex justify-content-center mt-5" *ngIf="showSpinner || showNoDataMessage">
+                <div *ngIf="showSpinner">
+                    <p-progressSpinner ariaLabel="loading" />
+                </div>
+                <div *ngIf="AssetPositionHistorylist.length === 0 && showNoDataMessage">
+                    <h3>No data available</h3>
+                </div>
+            </div>
+           
 
-            <p>Number of tracked objects: <span id="trackedObjectsCount">{{getNumberOfTrackedAssets()}}</span></p>
+            <div *ngIf="AssetPositionHistorylist.length > 0">
+                <h6 class="mt-5">Select floormap:</h6>
+                <select class="form-control" [(ngModel)]="selectedFloorMap" (ngModelChange)="onFloorMapChange($event)">
+                    <option *ngFor="let floor of floorMapList" [ngValue]="floor">{{ floor.Name }}</option>
+                </select>
 
-            <!-- Accordion containing assets and their heatmap data -->
-            <div class="accordion" id="accordionExample">
-                <div class="accordion-item" *ngFor="let item of assetsListOnly let i = index">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                            [attr.data-bs-target]="'#collapse' + i" aria-expanded="false"
-                            [attr.aria-controls]="'collapse' + i" (click)="filterAccordionAssetData(item,i); "
-                            (click)="drawHeatmapForAsset('heatmapCanvas' + i)">
-                            Asset: {{ item }}
-                        </button>
-                    </h2>
-                    <div [id]="'collapse' + i" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                            <div class="d-flex justify-content-center">
-                                <!--  
+                <p>Number of tracked objects on selected floor: <span id="trackedObjectsCount">{{getNumberOfTrackedAssets()}}</span></p>
+
+                <!-- Accordion containing assets and their heatmap data -->
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item" *ngFor="let item of assetsListOnly let i = index">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                [attr.data-bs-target]="'#collapse' + i" aria-expanded="false"
+                                [attr.aria-controls]="'collapse' + i" (click)="filterAccordionAssetData(item,i); "
+                                (click)="drawHeatmapForAsset('heatmapCanvas' + i)">
+                                Asset: {{ item }}
+                            </button>
+                        </h2>
+                        <div [id]="'collapse' + i" class="accordion-collapse collapse"
+                            data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <div class="d-flex justify-content-center">
+                                    <!--  
                             <div style="height: 25vh; overflow-y: scroll;">
                                 <div *ngFor="let item of assetFilteredData">
                                     {{ item.x }} - {{ item.y }}
@@ -76,21 +89,22 @@
                                 </div>
                             </div>
                             -->
-                                <div class="heatmap-container ">
-                                    <img class="position-absolute"
-                                        [src]="'data:image/png;base64,' + selectedFloorMap.Image"
-                                        style="width: 500px; height: 500px;">
-                                    <canvas class="position-absolute" [id]="'heatmapCanvas' + i"></canvas>
+                                    <div class="heatmap-container ">
+                                        <img class="position-absolute"
+                                            [src]="'data:image/png;base64,' + selectedFloorMap.Image"
+                                            style="width: 500px; height: 500px;">
+                                        <canvas class="position-absolute" [id]="'heatmapCanvas' + i"></canvas>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
-
-
-
+           
         </div>
+        
     </div>
 
 </body>

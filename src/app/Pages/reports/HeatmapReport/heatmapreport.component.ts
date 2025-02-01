@@ -8,10 +8,14 @@ import { CommonModule } from '@angular/common';
 import { FloormapService } from '../../../services/floormap.service';
 import { FloorMap } from '../../../models/FloorMap';
 import { FloatLabelModule } from 'primeng/floatlabel';
+
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { delay } from 'rxjs';
+
 @Component({
   selector: 'app-reports',
   standalone: true,
-  imports: [FormsModule, CommonModule, CalendarModule,FloatLabelModule
+  imports: [FormsModule, CommonModule, CalendarModule,FloatLabelModule,ProgressSpinnerModule
 
   ],
   templateUrl: './heatmapreport.component.html',
@@ -32,6 +36,8 @@ export class HeatmapReportComponent implements OnInit {
   AssetPositionHistorylistOrig: AssetPositionHistoryGET[] = [];
   floorMapList: FloorMap[] = [];
   selectedFloorMap: FloorMap = { Id: 0, Name: '', Image: '' };
+  showSpinner: boolean = false;
+  showNoDataMessage: boolean=false;
 
 
   constructor(private reportGenerator: ReportGeneratorService, private floorMapService: FloormapService) {
@@ -41,6 +47,15 @@ export class HeatmapReportComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     await this.getFloorMaps();
 
+  }
+
+  cleanAssetList(){
+    
+    this.assetsListOnly = [];
+    this.assetFilteredData = [];
+    this.AssetPositionHistorylist = [];
+    this.AssetPositionHistorylistOrig = [];
+    this.showNoDataMessage = false;
   }
 
   drawHeatmapForAsset(canvasId: string) {
@@ -118,10 +133,19 @@ export class HeatmapReportComponent implements OnInit {
 
 
   async generateReport() {
+    this.showSpinner = true;
+    this.cleanAssetList();
     await this.loadData();
     this.onFloorMapChange(this.selectedFloorMap);
     this.loadAssets();
+    console.log(this.AssetPositionHistorylist.length);
+    if (this.AssetPositionHistorylist.length===0)
+    {
+      this.showNoDataMessage = true;
+      delay(5000);
 
+    }
+    this.showSpinner = false;
   }
 
 
