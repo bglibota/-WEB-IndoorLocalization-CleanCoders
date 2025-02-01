@@ -1,68 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Heatmap Report</title>
-    
+
 </head>
+
 <body>
+
     <div class="d-flex justify-content-center ">
         <div>
-        <h1>Heatmap Report</h1>
-        <div class="d-flex flex-row">
-            
-            <div class="me-4 mb-3">
-                <label for="date">Select start date:</label>
-                <input class="form-control" type="date" [(ngModel)]="startDate" id="date" name="date">
-                
-            </div>
-            <div class="me-4 mb-3">
-                <label for="date">Select end date:</label>
-                <input class="form-control" type="date" [(ngModel)]="endDate" id="date" name="date">
-            </div>
-            <!--Time range selection-->
-            <div class="me-4 mb-3">
-                <label for="time">Select time range:</label>
-                <div class="input-group">
-                    <input class="form-control" type="time" [(ngModel)]="startTime" name="time">
-                    <div class="ms-3 me-3">-</div>
-                    <input class="form-control" type="time" [(ngModel)]="endTime" id="timeUntil" name="timeUntil">
+            <h1>Heatmap Report</h1>
+            <div class="d-flex flex-row">
+
+                <div class=" me-4 mb-3">
+                    <p-floatLabel>
+
+                        <p-calendar [(ngModel)]="startDate" [showIcon]="true" dateFormat="dd.mm.yy." id="startDate" />
+                        <label for="startDate">Select start date:</label>
+
+                    </p-floatLabel>
+
+                </div>
+                <div class=" me-4 mb-3">
+                    <p-floatLabel>
+                        <p-calendar [(ngModel)]="endDate" [showIcon]="true" dateFormat="dd.mm.yy." id="endDate" />
+                        <label for="endDate">Select end date:</label>
+                    </p-floatLabel>
+                </div>
+                <div class=" me-4 mb-3">
+                    <div class="input-group">
+                        <p-floatLabel>
+                            <p-calendar [(ngModel)]="startTime" [showIcon]="true" [timeOnly]="true" id="startTime" />
+                            <label for="startTime">Select start time:</label>
+
+                        </p-floatLabel>
+                        <p-floatLabel>
+                            <p-calendar [(ngModel)]="endTime" [showIcon]="true" [timeOnly]="true" id="endTime" />
+                            <label for="endTime">Select end time:</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+
+                <div>
+                    <button class="btn btn-primary" (click)="generateReport()">Generate report</button>
                 </div>
             </div>
-           
-            <div class="mt-4    ">
-                <button class="btn btn-primary" (click)="generateReport()">Generate report</button>
+            <select class="form-control" [(ngModel)]="selectedFloorMap" (ngModelChange)="onFloorMapChange($event)">
+                <option *ngFor="let floor of floorMapList" [ngValue]="floor">{{ floor.Name }}</option>
+            </select>
 
-            </div>
-        </div>
-        <select class="form-control" [(ngModel)]="selectedFloorMap" (ngModelChange)="onFloorMapChange($event)">
-            <option *ngFor="let floor of floorMapList" [ngValue]="floor">{{ floor.Name }}</option>
-        </select>
-        
-        <p>Number of tracked objects: <span id="trackedObjectsCount" >{{getNumberOfTrackedAssets()}}</span></p>
-        
+            <p>Number of tracked objects: <span id="trackedObjectsCount">{{getNumberOfTrackedAssets()}}</span></p>
 
-        <div class="accordion" id="accordionExample">
-            <div class="accordion-item" *ngFor="let item of assetsListOnly let i = index">
-                <h2 class="accordion-header">
-                    <button class="accordion-button" 
-                            type="button" 
-                            data-bs-toggle="collapse" 
-                            [attr.data-bs-target]="'#collapse' + i" 
-                            aria-expanded="false" 
-                            [attr.aria-controls]="'collapse' + i"
-                            (click)="filterAccordionAssetData(item,i); "
+            <!-- Accordion containing assets and their heatmap data -->
+            <div class="accordion" id="accordionExample">
+                <div class="accordion-item" *ngFor="let item of assetsListOnly let i = index">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            [attr.data-bs-target]="'#collapse' + i" aria-expanded="false"
+                            [attr.aria-controls]="'collapse' + i" (click)="filterAccordionAssetData(item,i); "
                             (click)="drawHeatmapForAsset('heatmapCanvas' + i)">
-                        Asset: {{ item }} 
-                    </button>
-                </h2>
-                <div [id]="'collapse' + i" 
-                     class="accordion-collapse collapse" 
-                     data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
-                        <div>
-                          <!--  
+                            Asset: {{ item }}
+                        </button>
+                    </h2>
+                    <div [id]="'collapse' + i" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <div class="d-flex justify-content-center">
+                                <!--  
                             <div style="height: 25vh; overflow-y: scroll;">
                                 <div *ngFor="let item of assetFilteredData">
                                     {{ item.x }} - {{ item.y }}
@@ -70,20 +76,23 @@
                                 </div>
                             </div>
                             -->
-                            <div class="heatmap-container">
-                                <img class="position-absolute" [src]="'data:image/png;base64,' + selectedFloorMap.Image" style="width: 500px; height: 500px;">
-                                <canvas  class="position-absolute" [id]="'heatmapCanvas' + i"   ></canvas>
+                                <div class="heatmap-container ">
+                                    <img class="position-absolute"
+                                        [src]="'data:image/png;base64,' + selectedFloorMap.Image"
+                                        style="width: 500px; height: 500px;">
+                                    <canvas class="position-absolute" [id]="'heatmapCanvas' + i"></canvas>
                                 </div>
                             </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
+
+
         </div>
-        
-        
-       
     </div>
-    </div>
-  
+
 </body>
+
 </html>
