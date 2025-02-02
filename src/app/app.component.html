@@ -1,9 +1,10 @@
-<nav class="navbar">
+<nav *ngIf="!isLoginPage" class="navbar">
   <img src="../assets/Sick-Logo.png" alt="logo" class="navbar-logo">
-  <a routerLink="/assets">ASSETS</a>
-  <a routerLink="/facilities">FACILITIES</a>
-  <a routerLink="/reports">REPORTS</a>
+  <a routerLink="/assets" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">ASSETS</a>
+  <a routerLink="/facilities" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">FACILITIES</a>
+  <a routerLink="/reports" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">REPORTS</a>
+  <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">DASHBOARD</a>
+  <button (click)="onLogout()" class="logout-button">Logout</button>
 </nav>
-
 
 <router-outlet></router-outlet>
