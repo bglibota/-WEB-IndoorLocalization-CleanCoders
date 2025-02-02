@@ -13,8 +13,10 @@ interface Point {
 }
 
 interface Zone {
+  id: number;
   name: string;
   points: Point[];
+  isActive: boolean;
 }
 @Component({
   selector: 'app-zone-management',
@@ -24,7 +26,7 @@ interface Zone {
   styleUrl: './zone-management.component.scss'
 })
 export class ZoneManagementComponent {
-  selectedZone: Zone = { name: '', points: [{ x: null, y: null, ordinalNumber: null }, { x: null, y: null, ordinalNumber: null }, { x: null, y: null, ordinalNumber: null }, { x: null, y: null, ordinalNumber: null }] };
+  selectedZone: Zone = {id: 0, name: '', points: [{ x: null, y: null, ordinalNumber: null }, { x: null, y: null, ordinalNumber: null }, { x: null, y: null, ordinalNumber: null }, { x: null, y: null, ordinalNumber: null }], isActive:false };
   @Input() selectedFloorMapId: number | null = null;
    
   onZoneUpdated(zone: Zone) {

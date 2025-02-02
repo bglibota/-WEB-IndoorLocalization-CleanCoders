@@ -13,14 +13,14 @@ export interface FloorMap {
   providedIn: 'root',
 })
 export class FloorMapService {
-  private apiUrlGetAllFloorMaps = 'https://localhost:7197/api/FloorMap/GetAllFloorMapsWithoutAssetHistories'; // Replace with your backend API URL
+  private apiUrlGetAllFloorMaps = 'http://localhost:5039/api/FloorMap/GetAllFloorMapsWithoutAssetHistories'; // Replace with your backend API URL
 
   constructor(private http: HttpClient) {}
 
   getFloorMaps(): Observable<FloorMap[]> {
     return this.http.get<FloorMap[]>(this.apiUrlGetAllFloorMaps);
   }
-  private apiUrlGetFloorMap = 'https://localhost:7197/api/FloorMap/GetFloorMap'; // Replace with your backend API URL
+  private apiUrlGetFloorMap = 'http://localhost:5039/api/FloorMap/GetFloorMap'; // Replace with your backend API URL
   getFloorMap(id: number): Observable<FloorMap> {
     return this.http.get<FloorMap>(`${this.apiUrlGetFloorMap}/${id}`);
   }

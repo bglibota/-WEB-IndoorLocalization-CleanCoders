@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, OnChanges, SimpleChanges, input } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
 import { FloorMapService, FloorMap } from '../../../Services/floor-map.service';
 
 interface Point {
@@ -11,6 +11,7 @@ interface Point {
 interface Zone {
   name: string;
   points: Point[];
+  isActive: boolean;
 }
 
 @Component({
@@ -21,7 +22,7 @@ interface Zone {
   styleUrls: ['./zone-drawing.component.scss']
 })
 export class ZoneDrawingComponent implements AfterViewInit, OnChanges {
-  @Input() zone: Zone = { name: '', points: [] };
+  @Input() zone: Zone = { name: '', points: [], isActive:false };
   @Input() selectedFloorMapId: number | null = null;
   @Output() zoneUpdated = new EventEmitter<Zone>();
   @ViewChild('canvas') canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -57,6 +58,10 @@ export class ZoneDrawingComponent implements AfterViewInit, OnChanges {
     }
   
     if (changes['zone'] && this.zone.points.length === 4) {
+      this.clearCanvas();
+      this.drawZoneRectangle();
+    }
+    if (changes['zone'] && this.zone.points.length === 0) {
       this.clearCanvas();
       this.drawZoneRectangle();
     }

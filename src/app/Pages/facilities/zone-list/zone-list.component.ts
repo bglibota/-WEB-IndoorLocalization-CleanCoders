@@ -22,10 +22,11 @@ interface Zone {
   styleUrls: ['./zone-list.component.scss'],
 })
 export class ZoneListComponent implements OnInit, OnChanges {
-  zones: Zone[] = [];
+  originalZones: Zone[] = [];  // Stores data from the database (immutable)
+  zones: Zone[] = []; // Used for updates
   @Output() zoneUpdated = new EventEmitter<Zone>();
   @Input() selectedFloorMapId: number | null = null;
-
+  selectedZone: Zone | null = null;
   isLoading: boolean = false;
 
   constructor(private zoneService: ZoneService) {}
@@ -42,6 +43,7 @@ export class ZoneListComponent implements OnInit, OnChanges {
 
   fetchZones(): void {
     if (this.selectedFloorMapId === null) {
+      this.originalZones = [];
       this.zones = [];
       return;
     }
@@ -56,7 +58,8 @@ export class ZoneListComponent implements OnInit, OnChanges {
           }
         });
 
-        this.zones = data;
+        this.originalZones = [...data]; // Store immutable original data
+        this.zones = JSON.parse(JSON.stringify(data)); // Create a deep copy for editing
       },
       error: (err) => {
         console.error('Error fetching zones:', err);
@@ -67,19 +70,10 @@ export class ZoneListComponent implements OnInit, OnChanges {
     });
   }
 
-  selectZone(zone: Zone): void {
-    this.zoneUpdated.emit(zone);
-  }
-
   updateZone(zone: Zone): void {
-    this.zoneUpdated.emit(zone);
+    this.selectedZone = { ...zone }; // Create a separate copy for form editing
+    this.zoneUpdated.emit(this.selectedZone);
   }
 
-  deleteZone(zoneId: number): void {
-    this.zoneService.deleteZone(zoneId).subscribe(() => {
-      this.fetchZones();
-    }, error => {
-      console.error('Error deleting zone:', error);
-    });
-  }
+  
 }

@@ -4,7 +4,7 @@
       <tr>
         <th>Zone Name</th>
         <th>Coordinates</th>
-        <th>Actions</th>
+        <th class="actions-column">Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -13,12 +13,12 @@
           <td>{{ zone.name }}</td>
           <td>
             <ng-container *ngFor="let point of zone.points; let i = index">
-              {{ i + 1 }}. x: {{ point.x }}; y: {{ point.y }}<span *ngIf="i < zone.points.length - 1">, </span>
+              {{ i + 1 }}. x: {{ point.x }}; y: {{ point.y }}
+              <span *ngIf="i < zone.points.length - 1">, </span>
             </ng-container>
           </td>
-          <td>
+          <td class="actions-column">
             <button class="btn-update" (click)="updateZone(zone)">Update</button>
-            <button class="btn-delete" (click)="deleteZone(zone.id)">Delete</button>
           </td>
         </tr>
       </ng-container>
@@ -29,3 +29,4 @@
 <div *ngIf="zones.length === 0" class="no-zones-message">
   <p>No zones available</p>
 </div>
+

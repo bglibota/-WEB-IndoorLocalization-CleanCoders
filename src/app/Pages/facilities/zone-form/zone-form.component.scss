@@ -75,54 +75,92 @@
   border-radius: 4px;
 }
 
+/* Status Indicator */
+.status-indicator {
+  font-weight: bold;
+  margin-bottom: 15px;
+  font-size: 16px;
+
+  .active {
+    color: green;
+  }
+
+  .inactive {
+    color: red;
+  }
+}
+
 /* Styling for Submit Button */
 .submit-button {
-  background-color: #4caf50; /* Green color for submit */
+  background-color: #4caf50;
   color: white;
   border: none;
-  padding: 15px 30px; /* Increased padding for larger buttons */
-  font-size: 18px; /* Larger font size */
-  font-weight: bold; /* Make text bold */
-  border-radius: 8px; /* Rounder corners */
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
   cursor: pointer;
   margin-top: 20px;
-  transition: background-color 0.3s ease, transform 0.2s ease; /* Add transition effects */
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .submit-button:hover {
-  background-color: #45a049; /* Darker green on hover */
-  transform: scale(1.05); /* Slightly increase size when hovering */
+  background-color: #45a049;
+  transform: scale(1.05);
 }
 
 .submit-button:focus {
-  outline: none; /* Remove outline when clicked */
-  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5); /* Glow effect on focus */
+  outline: none;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+/* Styling for Deactivate Button */
+.deactivate-button {
+  background-color: #ff9800; /* Orange color for deactivate */
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.deactivate-button:hover {
+  background-color: #e68900; /* Darker orange on hover */
+  transform: scale(1.05);
+}
+
+.deactivate-button:focus {
+  outline: none;
+  box-shadow: 0 0 10px rgba(255, 152, 0, 0.5);
 }
 
 /* Styling for Cancel Button */
 .cancel-button {
-  background-color: #f44336; /* Red color for cancel */
+  background-color: #f44336;
   color: white;
   border: none;
-  padding: 15px 30px; /* Larger padding */
-  font-size: 18px; /* Larger font size */
-  font-weight: bold; /* Bold text */
-  border-radius: 8px; /* Round corners */
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
   cursor: pointer;
   margin-top: 20px;
-  transition: background-color 0.3s ease, transform 0.2s ease; /* Add transition effects */
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .cancel-button:hover {
-  background-color: #e53935; /* Darker red on hover */
-  transform: scale(1.05); /* Slightly increase size when hovering */
+  background-color: #e53935;
+  transform: scale(1.05);
 }
 
 .cancel-button:focus {
-  outline: none; /* Remove outline when clicked */
-  box-shadow: 0 0 10px rgba(244, 67, 54, 0.5); /* Glow effect on focus */
+  outline: none;
+  box-shadow: 0 0 10px rgba(244, 67, 54, 0.5);
 }
-
 
 @media screen and (max-width: 768px) {
   .points-grid {

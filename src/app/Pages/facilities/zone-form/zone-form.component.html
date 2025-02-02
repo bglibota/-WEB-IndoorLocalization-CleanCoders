@@ -1,45 +1,41 @@
 <form (ngSubmit)="updateZone()" class="zone-form">
-  <h2>Zone Form</h2>
-  
   <div class="form-group">
-    <label for="zoneName">Naziv Zone:</label>
+    <label for="zoneName">Zone Name:</label>
     <input type="text" id="zoneName" [(ngModel)]="zone.name" name="zoneName" required />
+  </div>
+
+  <div class="status-indicator">
+    <label>Status:</label>
+    <span [class.active]="zone.isActive" [class.inactive]="!zone.isActive">
+      {{ zone.isActive ? 'Active' : 'Inactive' }}
+    </span>
   </div>
 
   <div class="points-grid">
     <div class="point" *ngFor="let point of zone.points; let i = index">
       <div class="point-header">
-        <label for="ordinalNumber{{ i }}">Redni broj: {{ point.ordinalNumber }}</label>
+        <label for="ordinalNumber{{ i }}">Ordinal Number: {{ point.ordinalNumber }}</label>
       </div>
       
       <div class="point-coordinates">
         <div class="coordinate-group">
-          <label for="x{{ i }}">X Koordinata:</label>
-          <input
-            type="number"
-            [(ngModel)]="point.x"
-            name="x{{ i }}"
-            [attr.id]="'x' + i"
-            readonly
-            required
-          />
+          <label for="x{{ i }}">X Coordinate:</label>
+          <input type="number" [(ngModel)]="point.x" name="x{{ i }}" [attr.id]="'x' + i" readonly required />
         </div>
         
         <div class="coordinate-group">
-          <label for="y{{ i }}">Y Koordinata:</label>
-          <input
-            type="number"
-            [(ngModel)]="point.y"
-            name="y{{ i }}"
-            [attr.id]="'y' + i"
-            readonly
-            required
-          />
+          <label for="y{{ i }}">Y Coordinate:</label>
+          <input type="number" [(ngModel)]="point.y" name="y{{ i }}" [attr.id]="'y' + i" readonly required />
         </div>
       </div>
     </div>
   </div>
 
-  <button type="submit" class="submit-button">Spremi Zonu</button>
+  <button class="submit-button" type="submit">{{ zone.id ? 'Update' : 'Save' }}</button>
+
+  <button type="button" class="deactivate-button" (click)="deactivateZone()" *ngIf="zone.isActive">
+    Deactivate
+  </button>
+
   <button type="button" class="cancel-button" (click)="cancelZoneUpdate()">Cancel</button>
 </form>
