@@ -12,6 +12,7 @@ interface Zone {
   id: number;
   name: string;
   points: Point[];
+  isActive:boolean;
 }
 
 @Component({

@@ -9,6 +9,7 @@ interface Point {
 }
 
 interface Zone {
+  id:number;
   name: string;
   points: Point[];
   isActive: boolean;
@@ -22,7 +23,7 @@ interface Zone {
   styleUrls: ['./zone-drawing.component.scss']
 })
 export class ZoneDrawingComponent implements AfterViewInit, OnChanges {
-  @Input() zone: Zone = { name: '', points: [], isActive:false };
+  @Input() zone: Zone = { id:0, name: '', points: [], isActive:false };
   @Input() selectedFloorMapId: number | null = null;
   @Output() zoneUpdated = new EventEmitter<Zone>();
   @ViewChild('canvas') canvasRef!: ElementRef<HTMLCanvasElement>;
