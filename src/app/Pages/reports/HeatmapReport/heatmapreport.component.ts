@@ -60,9 +60,7 @@ export class HeatmapReportComponent implements OnInit {
 
   drawHeatmapForAsset(canvasId: string) {
     const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
-    console.log("canvas", canvas);
     const heatmap = new Heatmap(this.assetFilteredData, new ElementRef(canvas));
-    console.log("heatmap", heatmap);
 
     heatmap.drawHeatmap();
   }
@@ -88,7 +86,6 @@ export class HeatmapReportComponent implements OnInit {
 
   private async loadData() {
     try {
-      console.log("startDate", this.startTime.toTimeString().split(' ')[0]);
       const response = await this.reportGenerator.getHeatmapReportData(this.startDate.toISOString().split('T')[0], this.endDate!!.toISOString().split('T')[0], this.startTime.toTimeString().split(' ')[0], this.endTime.toTimeString().split(' ')[0]);
       if (response != null) {
         this.AssetPositionHistorylistOrig = response;
@@ -105,7 +102,6 @@ export class HeatmapReportComponent implements OnInit {
 
   async getFloorMaps() {
     const floorMaps = await this.floorMapService.getAllFloormap();
-    console.log("floorMaps", Array.from(floorMaps));
     this.floorMapList = Array.from(floorMaps);
   }
 
@@ -133,12 +129,12 @@ export class HeatmapReportComponent implements OnInit {
 
 
   async generateReport() {
+    console.log("paarms", this.startDate.toISOString().split('T')[0], this.endDate!!.toISOString().split('T')[0], this.startTime.toTimeString().split(' ')[0], this.endTime.toTimeString().split(' ')[0]);
     this.showSpinner = true;
     this.cleanAssetList();
     await this.loadData();
     this.onFloorMapChange(this.selectedFloorMap);
     this.loadAssets();
-    console.log(this.AssetPositionHistorylist.length);
     if (this.AssetPositionHistorylist.length===0)
     {
       this.showNoDataMessage = true;

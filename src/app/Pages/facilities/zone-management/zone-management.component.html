@@ -1,0 +1,32 @@
+<div class="zone-management">
+  <!-- Zone List spans full width -->
+  <section class="zone-section zone-list">
+    <h2 class="section-title">Zone List</h2>
+    <app-zone-list 
+      [selectedFloorMapId]="selectedFloorMapId" 
+      (zoneUpdated)="onZoneUpdated($event)">
+    </app-zone-list>
+  </section>
+
+  <div class="zone-container">
+    <!-- Zone Form on the Left -->
+    <section class="zone-section zone-form">
+      <h2 class="section-title">Zone Form</h2>
+      <app-zone-form 
+        [zone]="selectedZone" 
+        [selectedFloorMapId]="selectedFloorMapId"
+        (zoneUpdated)="onZoneUpdated($event)">
+      </app-zone-form>
+    </section>
+
+    <!-- Zone Drawing on the Right -->
+    <section class="zone-section zone-drawing">
+      <h2 class="section-title">Zone Drawing</h2>
+      <app-zone-drawing 
+        [selectedFloorMapId]="selectedFloorMapId" 
+        [zone]="selectedZone" 
+        (zoneUpdated)="onZoneUpdated($event)">
+      </app-zone-drawing>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+<div *ngIf="zones.length > 0" class="zones-container">
+  <table class="zones-table">
+    <thead>
+      <tr>
+        <th>Zone Name</th>
+        <th>Coordinates</th>
+        <th class="actions-column">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let zone of zones">
+        <tr>
+          <td>{{ zone.name }}</td>
+          <td>
+            <ng-container *ngFor="let point of zone.points; let i = index">
+              {{ i + 1 }}. x: {{ point.x }}; y: {{ point.y }}
+              <span *ngIf="i < zone.points.length - 1">, </span>
+            </ng-container>
+          </td>
+          <td class="actions-column">
+            <button class="btn-update" (click)="updateZone(zone)">Update</button>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</div>
+
+<div *ngIf="zones.length === 0" class="no-zones-message">
+  <p>No zones available</p>
+</div>
+

@@ -1,1 +1,11 @@
-<p>facilities works!</p>
+<div class="facilities-page-container">
+  <h2>Warehouse Facilities</h2>
+
+  <!-- Floor Map Selection -->
+  <div class="floor-maps-container">
+    <app-floor-map (floorMapSelected)="selectFloorMap($event)"></app-floor-map>
+  </div>
+
+  <!-- Show Zone Management only if a floor map is selected -->
+  <app-zone-management *ngIf="selectedFloorMapId" [selectedFloorMapId]="selectedFloorMapId"></app-zone-management>
+</div>
