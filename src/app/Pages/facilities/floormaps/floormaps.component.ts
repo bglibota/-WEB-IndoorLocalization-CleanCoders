@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { FloorMapService, FloorMap } from '../../../Services/floor-map.service';
+import { FloorMapService, FloorMap } from '../../../services/floor-map.service';
 import { CommonModule } from '@angular/common';
 
 @Component({

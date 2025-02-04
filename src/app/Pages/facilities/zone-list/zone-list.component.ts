@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, Output, Input, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { ZoneService } from '../../../Services/zone.service';
+import { ZoneService } from '../../../services/zone.service';
 
 interface Point {
   x: number | null;

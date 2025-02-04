@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
-import { FloorMapService, FloorMap } from '../../../Services/floor-map.service';
+import { FloorMapService, FloorMap } from '../../../services/floor-map.service';
 
 interface Point {
   x: number | null;
