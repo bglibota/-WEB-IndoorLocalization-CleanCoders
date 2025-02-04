@@ -13,8 +13,8 @@ export const routes: Routes = [
     { path: 'register', component: RegisterComponent },
     { path: 'assets', component: AssetsComponent, canActivate: [authGuard] },
     { path: 'facilities', component: FacilitiesComponent, canActivate: [authGuard] },
-    { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] }, // Nova ruta za Dashboard
-    { path: 'heatmapreport', component: HeatmapReportComponent  },
+    { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
+    { path: 'heatmapreport', component: HeatmapReportComponent, canActivate: [authGuard] },
    
    
 ];
