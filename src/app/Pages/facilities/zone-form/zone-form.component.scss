@@ -1,0 +1,178 @@
+.zone-form {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+}
+
+.zone-form h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #333333;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 5px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #555555;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.points-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.point {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+}
+
+.point-header {
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #333333;
+}
+
+.point-coordinates {
+  display: flex;
+  gap: 20px;
+}
+
+.coordinate-group label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 5px;
+  color: #555555;
+}
+
+.coordinate-group input {
+  width: 100px;
+  padding: 6px;
+  font-size: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Status Indicator */
+.status-indicator {
+  font-weight: bold;
+  margin-bottom: 15px;
+  font-size: 16px;
+
+  .active {
+    color: green;
+  }
+
+  .inactive {
+    color: red;
+  }
+}
+
+/* Styling for Submit Button */
+.submit-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.submit-button:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
+.submit-button:focus {
+  outline: none;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+/* Styling for Deactivate Button */
+.deactivate-button {
+  background-color: #ff9800; /* Orange color for deactivate */
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.deactivate-button:hover {
+  background-color: #e68900; /* Darker orange on hover */
+  transform: scale(1.05);
+}
+
+.deactivate-button:focus {
+  outline: none;
+  box-shadow: 0 0 10px rgba(255, 152, 0, 0.5);
+}
+
+/* Styling for Cancel Button */
+.cancel-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.cancel-button:hover {
+  background-color: #e53935;
+  transform: scale(1.05);
+}
+
+.cancel-button:focus {
+  outline: none;
+  box-shadow: 0 0 10px rgba(244, 67, 54, 0.5);
+}
+
+@media screen and (max-width: 768px) {
+  .points-grid {
+    flex-direction: column;
+  }
+
+  .point-coordinates {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .coordinate-group input {
+    width: 100%;
+  }
+}

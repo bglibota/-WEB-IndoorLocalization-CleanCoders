@@ -1,0 +1,49 @@
+.zone-management {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+
+.zone-list {
+  width: 100%;
+}
+
+.zone-container {
+  display: flex;
+  gap: 20px;
+}
+
+.zone-form, .zone-drawing {
+  flex: 1;
+}
+
+.zone-section {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.zone-section:hover {
+  transform: translateY(-5px);
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+/* Responsive Adaptation */
+@media (max-width: 768px) {
+  .zone-container {
+    flex-direction: column;
+  }
+}

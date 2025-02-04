@@ -1,0 +1,26 @@
+<div class="zone-drawing-container">
+  <!-- Message displayed when no floor map is selected -->
+  <div *ngIf="!selectedFloorMapId" class="no-floormap-message">
+    <p>Select a floor map to add zones.</p>
+  </div>
+
+  <!-- Canvas and buttons displayed when a floor map is selected -->
+  <div *ngIf="selectedFloorMapId" class="canvas-wrapper">
+    <canvas
+      #canvas
+      (mousedown)="onMouseDown($event)"
+      (mousemove)="onMouseMove($event)"
+      (mouseup)="onMouseUp($event)">
+      Your browser does not support the canvas element.
+    </canvas>
+
+    <div class="button-container">
+      <!-- Button to enable drawing -->
+      <button *ngIf="!drawingEnabled && !hasDrawn" (click)="enableDrawing()" class="btn btn-primary">Start Drawing</button>
+
+      <!-- Button to update the zone after drawing -->
+      <button *ngIf="hasDrawn" (click)="updateZone()" class="btn btn-secondary">Update Drawing</button>
+      
+    </div>
+  </div>
+</div>
